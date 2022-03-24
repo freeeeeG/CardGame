@@ -133,6 +133,7 @@ public class BattleManager : Singleton<BattleManager>
         {
             currentPhase = GamePhase.playerDraw;
         }
+        
     }
 
 

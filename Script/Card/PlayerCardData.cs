@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
-
 public class PlayerCardData : MonoBehaviour
 {
     public TextAsset playerData;
@@ -12,5 +11,6 @@ public class PlayerCardData : MonoBehaviour
     public int totalCoins;
     public int[] playerCards;
     public int[] playerDeck;
-    
+
+
 }

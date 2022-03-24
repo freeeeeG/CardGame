@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+
 public class ArrowFollow : MonoBehaviour
 {
     public Vector2 startPoint;
     RectTransform arrow;
     Vector2 endPoint;
-
+    
     float arrowLength;
     Vector2 arrowPosition;
     float theta;

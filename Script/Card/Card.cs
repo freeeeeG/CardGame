@@ -38,14 +38,30 @@ public class ItemCard : Card
     }
 }
 
-// 武器卡类 继承自卡牌类
+//武器卡类 继承自卡牌类
 public class WeaponCard : Card
 {
-    public string effect;
-    public string type;
-    public WeaponCard(int _id, string _cardName, string _type, string _effect) : base(_id, _cardName)
+    public int attack;
+    public int range;
+    public WeaponCard(int _id, string _cardName, int _attack, int _range) : base(_id, _cardName)
     {
+        this.attack = _attack;
+        this.range = _range;
+    }
+}
+//魔法卡类 继承自卡牌类
+public class MagicCard : Card
+{
+    public int rank;
+    public string type;
+    public string effect;
+    public MagicCard(int _id, string _cardName, int _rank, string _type, string _effect) : base(_id, _cardName)
+    {
+        this.rank = _rank;
         this.type = _type;
         this.effect = _effect;
     }
 }
+
+
+
