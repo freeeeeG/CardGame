@@ -11,7 +11,6 @@ public enum GamePhase
 public class BattleManager : Singleton<BattleManager>
 {
     public GameObject playerData; // 数据
-    public GameObject enemyData;
     public GameObject playerHands; // 手牌
     public GameObject enemyHands;
     public Transform canvas;
@@ -33,7 +32,7 @@ public class BattleManager : Singleton<BattleManager>
     //回合阶段
     public GamePhase currentPhase;
 
-
+    private CardData CardDate;
     private int waitingID;
     public GameObject attackingMonster;
     private int attackingID;
@@ -63,7 +62,7 @@ public class BattleManager : Singleton<BattleManager>
                 int counter = pdm.playerDeck[i];
                 for (int j = 0; j < counter; j++)
                 {
-                    // playerDeckList.Add(CardDate.CopyCard(i));
+                    playerDeckList.Add(CardDate.CopyCard(i));
                 }
             }
         }
@@ -78,20 +77,8 @@ public class BattleManager : Singleton<BattleManager>
             for (int i = 0; i < _number; i++)
             {
                 GameObject newCard = GameObject.Instantiate(cardPrefab, playerHands.transform);
-                // newCard.GetComponent<CardDisplay>().card = playerDeckList[0];
+                newCard.GetComponent<CardDisplay>().card = playerDeckList[0];
                 playerDeckList.RemoveAt(0);
-                // newCard.GetComponent<BattleCard>().cardState = CardState.inPlayerHand;
-            }
-
-        }
-        else if (_player == 1)
-        {
-            for (int i = 0; i < _number; i++)
-            {
-                GameObject newCard = GameObject.Instantiate(cardPrefab, enemyHands.transform);
-                // newCard.GetComponent<CardDisplay>().card = enemyDeckList[0];
-                enemyDeckList.RemoveAt(0);
-                // newCard.GetComponent<BattleCard>().cardState = CardState.inEnemyHand;
             }
 
         }
@@ -149,21 +136,6 @@ public class BattleManager : Singleton<BattleManager>
 
         // 直接攻击条件
         bool strightAttack = true;
-        if (_player == 0)
-        {
-            foreach (var block in enemyBlocks)
-            {
-                if (block.GetComponent<CardBlock>().monsterCard != null)
-                {
-                    block.GetComponent<CardBlock>().SetAttack();
-                    strightAttack = false;
-                }
-            }
-            if (strightAttack)
-            {
-                // 可以直接攻击对手玩家
-            }
-        }
         if (_player == 1)
         {
             foreach (var block in playerBlocks)
