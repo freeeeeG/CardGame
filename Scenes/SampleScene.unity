@@ -504,6 +504,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1993757231}
   - component: {fileID: 1993757230}
+  - component: {fileID: 1993757232}
   m_Layer: 0
   m_Name: "\u89D2\u8272"
   m_TagString: Untagged
@@ -578,3 +579,16 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1993757232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1993757229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f556683a6318c6408ae761980778dcc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardListData: {fileID: 4900000, guid: d9b35a249d61e1545a922673e84df192, type: 3}
