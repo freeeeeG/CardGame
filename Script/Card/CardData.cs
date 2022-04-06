@@ -8,37 +8,73 @@ public class CardData : MonoBehaviour
     public TextAsset cardListData; // 卡牌数据txt文件
     // Start is called before the first frame update
 
+    void Start()
+    {
+        Debug.Log("执行");
+        LordCardList();
+        TestCard();
+    }
 
     //加载卡组
     public void LordCardList()
     {
+        Debug.Log("执行2");
         string[] dataArray = cardListData.text.Split('\n');
         foreach (var row in dataArray)
         {
             string[] rowArray = row.Split(',');
+
+            //for(int i=0;i<rowArray.Length;i++)  //测试读取情况
+            //{
+            //    Debug.Log(""+rowArray[i]);
+            //}
+
+
             if (rowArray[0] == "#")
             {
                 continue;
             }
-            else if (rowArray[0] == "s")
+            else if (rowArray[0] == "spell")
+            {
+                Debug.Log("执行2");
+                int id = int.Parse(rowArray[1]);
+                string name = rowArray[2];
+                int mo = int.Parse(rowArray[3]);
+                string attribute = rowArray[4];
+                
+                string type = rowArray[5];
+        
+                string effect = rowArray[6];
+                CardList.Add(new SpellCard(id, name,  mo,attribute, type, effect ));
+            }
+            else if (rowArray[0] == "feild")
             {
                 int id = int.Parse(rowArray[1]);
                 string name = rowArray[2];
-                int rank = int.Parse(rowArray[3]);
+                int mo = int.Parse(rowArray[3]);
                 string type = rowArray[4];
                 string effect = rowArray[5];
-                CardList.Add(new SpellCard(id, name, rank, type, effect));
-            }
-            else if (rowArray[0] == "t")
-            {
-                int id = int.Parse(rowArray[1]);
-                string name = rowArray[2];
-                string type = rowArray[3];
-                string effect = rowArray[4];
-                CardList.Add(new ItemCard(id, name, type, effect));
+                CardList.Add(new FeildCard(id, name,mo, type, effect));
             }
         }
     
+    }
+    void TestCard()  //测试读取到的卡牌
+    {
+        foreach (var cards in CardList)
+        {
+            if(cards is SpellCard)
+            {
+                var spellcard =cards as SpellCard;
+                Debug.Log("这是属性卡 "+"卡牌名称:" + spellcard.cardName + " 卡牌id:" + spellcard.id + "卡牌墨:" + spellcard.mo + "卡牌属性:" + spellcard.attribute+"卡牌效果"+spellcard.effect);
+            }
+            if(cards is FeildCard)
+            {
+                var feildcard = cards as FeildCard;
+                Debug.Log("这是场地卡 " + "卡牌名称:" + feildcard.cardName + " 卡牌id:" + feildcard.id + "卡牌墨:" + feildcard.mo+"卡牌效果:"+feildcard.effect+"卡牌类型："+feildcard.type);
+            }
+           
+        }
     }
 
 
@@ -48,13 +84,14 @@ public class CardData : MonoBehaviour
         List<Card> copylist = new List<Card>();
         copylist = CardList;
         Card card1 = copylist[1];
-        Card card2 = new Card(card1.id, card1.cardName);
+        Card card2 = new Card(card1.id, card1.cardName,card1.mo);
         Card card3 = CopyCard(1);
 
         card1.cardName = "DarkKnight";
         print("test copy");
         print(card3.cardName + "," + card1.GetType());
         print(card2.cardName + "," + card2.GetType());
+       
         print(CardList[1].cardName + "," + CardList[1].GetType());
 
     }
@@ -62,17 +99,17 @@ public class CardData : MonoBehaviour
         public Card CopyCard(int _id) // 从卡牌数据中复制一个实体，这个实体的改变不会影响原始数据
     {
         Card card = CardList[_id];
-        Card copyCard = new Card(_id, card.cardName);
+        Card copyCard = new Card(_id, card.cardName,card.mo);
 
         if (card is SpellCard)
         {
             var spellcard = card as SpellCard;
-            copyCard = new SpellCard(_id, spellcard.cardName, spellcard.rank, spellcard.type, spellcard.effect);
+            copyCard = new SpellCard(_id, spellcard.cardName, spellcard.mo,spellcard.attribute, spellcard.type, spellcard.effect);
         }
-        else if (card is ItemCard)
+        else if (card is FeildCard)
         {
-            var itemcard = card as ItemCard;
-            copyCard = new ItemCard(_id, itemcard.cardName, itemcard.type, itemcard.effect);
+            var feildcard = card as FeildCard;
+            copyCard = new FeildCard(_id, feildcard.cardName, feildcard.mo, feildcard.type, feildcard.effect);
         }
         return copyCard;
     }
