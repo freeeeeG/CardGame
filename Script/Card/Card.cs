@@ -15,6 +15,10 @@ public class Card
         this.mo = _mo;
         
     }
+    public void Skill()
+    {
+        
+    }
 }
 
 
