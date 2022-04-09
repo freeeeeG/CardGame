@@ -10,8 +10,13 @@ public class PlayerCardData : MonoBehaviour
     public int totalCoins;
     public int[] playerCards;
     public int[] playerDeck;
-
-private void Update(){
+    public CardData carddata;
+    private void Start()
+    {
+        //carddata.LordCardList();  //在这个脚本读取卡组
+        //LoadPlayerData();  //再读取玩家数据
+    }
+    private void Update(){
     if(Input.GetKey(KeyCode.W)) {
         SavePlayerData();
     }
@@ -42,5 +47,28 @@ private void Update(){
         }
         File.WriteAllLines(path, datas);
         
+    }
+    public void LoadPlayerData()
+    {
+        playerCards = new int[carddata.CardList.Count]; 
+        string[] datarow = playerData.text.Split('\n');
+        foreach(var row in datarow)
+        {
+            string[] rowArray = row.Split(',');
+            if (rowArray[0] == "#")
+            {
+                continue;
+            }
+            else if (rowArray[0] == "coins")
+            {
+                totalCoins = int.Parse(rowArray[1]);
+            }
+            else if(rowArray[0]=="card")
+            {
+                int id = int.Parse(rowArray[1]);
+                int num = int.Parse(rowArray[2]);   //卡牌数量
+
+            }
+        }
     }
 }

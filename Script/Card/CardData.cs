@@ -56,6 +56,26 @@ public class CardData : MonoBehaviour
                 string effect = rowArray[5];
                 CardList.Add(new FeildCard(id, name,mo, type, effect));
             }
+            else if(rowArray[0]=="beside")
+            {
+                int id = int.Parse(rowArray[1]);
+                string name = rowArray[2];
+                int mo = int.Parse(rowArray[3]);
+                string type = rowArray[4];
+                string effect = rowArray[5];
+                CardList.Add(new BesideCard(id, name, mo, type, effect));
+            }
+            else if(rowArray[0]== "divination")
+            {
+                int id = int.Parse(rowArray[1]);
+                string name = rowArray[2];
+                int mo = int.Parse(rowArray[3]);
+                string type = rowArray[4];
+                string effect = rowArray[5];
+                int front_id= int.Parse(rowArray[6]);
+                int back_id= int.Parse(rowArray[7]);
+                CardList.Add(new DivinationCard(id, name, mo, type, effect,front_id,back_id));
+            }
         }
     
     }
