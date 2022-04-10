@@ -14,6 +14,9 @@ public class Player : Singleton<Player>
     public int drawCardCount = 3;
     //Player pysical
     #region
+
+
+    
     public Vector2 moveDir;
     // public Rigidbody2D rb;
     // public CheakAround onFlood;
