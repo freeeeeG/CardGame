@@ -7,16 +7,18 @@ public class CardDisplay : MonoBehaviour
 {
     public Card card;
     public Text cardName;
-    public Text cardAttack;
-    public Text cardHealth;
+    public Text mo;   //墨值
+
 
     public Text infoText;
 
     public Image background;
 
-    public Color monsterColor;
-    public Color itemColor;
+    public Color besideColor;
+    public Color feildColor;
     public Color spellColor;
+    public Color divinationColor;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,23 +39,38 @@ public class CardDisplay : MonoBehaviour
     public void ShowCard()
     {
         cardName.text = card.cardName;
-        if (card is ItemCard)
+        //if (card is ItemCard)
+        //{
+        //    var itemcard = card as ItemCard;
+        //    cardAttack.gameObject.SetActive(false);
+        //    cardHealth.gameObject.SetActive(false);
+        //    background.color = itemColor;
+        //    infoText.text = itemcard.effect;
+        //}
+        // 如果是旁牌，则不需要显示墨值
+        if(card is SideCard)
         {
-            var itemcard = card as ItemCard;
-            cardAttack.gameObject.SetActive(false);
-            cardHealth.gameObject.SetActive(false);
-            background.color = itemColor;
-            infoText.text = itemcard.effect;
+            var besidecard = card as SideCard;
+            mo.gameObject.SetActive(false);
+            background.color = besideColor;
+            infoText.text = besidecard.effect;
         }
-        // 如果是法术牌和道具牌，则不需要显示攻击力等数值
   
         else if (card is SpellCard)
         {
             var spellcard = card as SpellCard;
-            cardAttack.gameObject.SetActive(false);
-            cardHealth.gameObject.SetActive(false);
+
             background.color = spellColor;
             infoText.text = spellcard.effect;
+        }
+
+        else if (card is DivinationCard)
+        {
+            var divinationcard = card as DivinationCard;
+            background.color = feildColor;
+            infoText.text = divinationcard.effect;
+
+
         }
 
     }
