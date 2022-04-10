@@ -48,9 +48,9 @@ public class CardDisplay : MonoBehaviour
         //    infoText.text = itemcard.effect;
         //}
         // 如果是旁牌，则不需要显示墨值
-        if(card is BesideCard)
+        if(card is SideCard)
         {
-            var besidecard = card as BesideCard;
+            var besidecard = card as SideCard;
             mo.gameObject.SetActive(false);
             background.color = besideColor;
             infoText.text = besidecard.effect;
@@ -63,13 +63,7 @@ public class CardDisplay : MonoBehaviour
             background.color = spellColor;
             infoText.text = spellcard.effect;
         }
-        else if(card is FeildCard)
-        {
-            var feildcard = card as FeildCard;
-            background.color = feildColor;
-            infoText.text = feildcard.effect;
 
-        }
         else if (card is DivinationCard)
         {
             var divinationcard = card as DivinationCard;

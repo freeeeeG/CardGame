@@ -10,10 +10,19 @@ public class PlayerCardData : MonoBehaviour
     public int totalCoins;
     public int[] playerCards;
     public int[] playerDeck;
-    public CardData carddata;
+
+   
+    public List<Card> cardlist;
     private void Start()
     {
-        //carddata.LordCardList();  //在这个脚本读取卡组
+
+        //测试单例调用
+        cardlist = CardData.Instance.GetCard();
+
+        foreach (var card in cardlist)
+        {
+            Debug.Log("" + card.cardName);
+        }
         //LoadPlayerData();  //再读取玩家数据
     }
     private void Update(){
@@ -50,9 +59,9 @@ public class PlayerCardData : MonoBehaviour
     }
     public void LoadPlayerData()
     {
-        playerCards = new int[carddata.CardList.Count]; 
+        playerCards = new int[cardlist.Count];
         string[] datarow = playerData.text.Split('\n');
-        foreach(var row in datarow)
+        foreach (var row in datarow)
         {
             string[] rowArray = row.Split(',');
             if (rowArray[0] == "#")
@@ -63,7 +72,7 @@ public class PlayerCardData : MonoBehaviour
             {
                 totalCoins = int.Parse(rowArray[1]);
             }
-            else if(rowArray[0]=="card")
+            else if (rowArray[0] == "card")
             {
                 int id = int.Parse(rowArray[1]);
                 int num = int.Parse(rowArray[2]);   //卡牌数量

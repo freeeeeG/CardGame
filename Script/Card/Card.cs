@@ -22,39 +22,42 @@ public class Card
 public class SpellCard : Card
 {
   
-    public string type;  //卡牌类型
     public string effect;  //卡牌效果
-    public string attribute;  //属性 金 木 水 火 土
+    
 
-    public SpellCard(int _id, string _cardName,int _mo,string _attribute, string _type, string _effect) : base(_id, _cardName,_mo)
+    public SpellCard(int _id, string _cardName,int _mo, string _effect) : base(_id, _cardName,_mo)
     {
       
-        this.type = _type;
+    
+        this.effect = _effect;
+        
+    }
+}
+//组合卡牌  偏和旁组合而成的卡牌
+public class CombineCard:Card
+{
+    public string effect;   //卡牌效果
+    public string attribute;  //属性 金 木 水 火 土 无
+    public string back_name;    //旁卡牌名称
+    public CombineCard(int _id,string _cardName,int _mo,string _attribute, string _effect, string _back_name):base(_id, _cardName, _mo)
+    {
         this.effect = _effect;
         this.attribute = _attribute;
+        this.back_name = _back_name;
     }
-}
-//场地卡类 继承自卡牌类 （八卦牌）
-public class FeildCard : Card
-{
-    public string type;
-    public string effect;
 
-    public FeildCard(int _id,string _cardName,int _mo,string _type,string _effect) :base(_id,_cardName,_mo)
-    {
-        this.type = _type;
-        this.effect = _effect;
-    }
 }
+
+
 //旁卡 用来和属性牌组成字
-public class BesideCard : Card
+public class SideCard : Card
 {
-    public string type;
+   
     public string effect;
 
-    public BesideCard(int _id,string _cardName,int _mo,string _type,string _effect):base(_id,_cardName,_mo)
+    public SideCard(int _id,string _cardName,int _mo,string _effect):base(_id,_cardName,_mo)
     {
-        this.type = _type;
+        
         this.effect = _effect;
     }
 
@@ -62,19 +65,21 @@ public class BesideCard : Card
 //卦象牌，需要使用八卦牌才会加入手牌的牌，frontid和backid表示需要的前后八卦牌的卡牌id
 public class DivinationCard :Card
 {
-    public string type;
+    
     public string effect;
     public int front_id;
     public int back_id;
-    public DivinationCard(int _id,string _cardName,int _mo,string _type,string _effect,int _front_id,int _back_id):base(_id,_cardName,_mo)
+    public DivinationCard(int _id,string _cardName,int _mo,string _effect,int _front_id,int _back_id):base(_id,_cardName,_mo)
     {
-        this.type = _type;
+       
         this.effect = _effect;
         this.front_id = _front_id;
         this.back_id = _back_id;
     }
 
 }
+
+
 // 消耗卡类 继承自卡牌类
 public class ItemCard : Card
 {
