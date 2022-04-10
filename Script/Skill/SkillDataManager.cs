@@ -7,6 +7,9 @@ public class SkillDataManager : Singleton<SkillDataManager>
     // Start is called before the first frame update
     List<string> datas = new List<string>();
     List<List<string>> skillDatas = new List<List<string>>();
+
+
+    
     void Start()
     {
         string skillPath = Application.dataPath + "/Datas/Skills.csv";
