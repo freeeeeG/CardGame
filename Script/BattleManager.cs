@@ -10,6 +10,8 @@ public enum GamePhase
 }
 public class BattleManager : Singleton<BattleManager>
 {
+
+
     public GameObject playerData; // 数据
     public int playerHandsCounts; // 手牌数
     public GameObject[] playerHands; // 手牌
@@ -33,23 +35,31 @@ public class BattleManager : Singleton<BattleManager>
     //回合阶段
     public GamePhase currentPhase;
 
-    private CardData CardDate;
+    private CardData cardDate;
     private int waitingID;
     public GameObject attackingMonster;
     private int attackingID;
+    
 
-
+    public bool isPlayerTurn;
     // Start is called before the first frame update
-    void Start()
+
+
+
+
+    public void GameStart()
     {
-        GameStart();
-    }
-    void GameStart()
-    {
-        currentPhase = GamePhase.gameStart;
+
+        // 敌方先手
+        if(isPlayerTurn)
+        currentPhase = GamePhase.playerDraw;
+        else
+        currentPhase = GamePhase.enemyAction;
         ReadDeck();
     }
 
+
+    // 读取卡组
     void ReadDeck()
     {
         PlayerCardData pdm = playerData.GetComponent<PlayerCardData>();
@@ -60,7 +70,7 @@ public class BattleManager : Singleton<BattleManager>
                 int counter = pdm.playerDeck[i];
                 for (int j = 0; j < counter; j++)
                 {
-                    playerDeckList.Add(CardDate.CopyCard(i));
+                    playerDeckList.Add(cardDate.CopyCard(i));
                 }
             }
         }
@@ -68,6 +78,7 @@ public class BattleManager : Singleton<BattleManager>
     }
 
 
+    //抽牌
     public void DrawCard(int _player, int _number)
     {
         if (_player == 0)
@@ -83,18 +94,18 @@ public class BattleManager : Singleton<BattleManager>
         }
     }
 
-    //每回合生命周期
-    #region 
-    //抽牌阶段
+    #region 每回合生命周期
+
+
     public void OnPlayerDrawCard()
     {
         if (currentPhase == GamePhase.playerDraw)
         {
-            DrawCard(0, 1);
+            DrawCard(0, Player.Instance.drawCardCount);
             currentPhase = GamePhase.playerAction;
         }
     }
-        public void OnClickTurnEnd()
+    public void OnClickTurnEnd()
     {
         TurnEnd();
     }
@@ -108,12 +119,14 @@ public class BattleManager : Singleton<BattleManager>
         {
             currentPhase = GamePhase.playerDraw;
         }
+
+        //TODO: 更新回合(八卦牌)
         
     }
 
 
     #endregion
-    public void AttackRequst(Vector2 _startPoint, int _player, GameObject _monster)
+    public void AttackRequest(Vector2 _startPoint, int _player, GameObject _monster)
     {
         if (arrow == null)
         {
@@ -146,7 +159,7 @@ public class BattleManager : Singleton<BattleManager>
     }
 
 
-    public void UseRequst(Vector2 _startPoint, int _player, GameObject _monster)
+    public void UseRequest(Vector2 _startPoint, int _player, GameObject _monster)
     {
         if (arrow == null)
         {

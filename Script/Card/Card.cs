@@ -44,6 +44,7 @@ public class FeildCard : Card
     public string type;
     public string effect;
 
+     
     public FeildCard(int _id,string _cardName,int _mo,string _type,string _effect) :base(_id,_cardName,_mo)
     {
         this.type = _type;
@@ -62,32 +63,9 @@ public class ItemCard : Card
             this.effect = _effect;
         }
     }
-
-    //武器卡类 继承自卡牌类
-    public class WeaponCard : Card
-    {
-        public int attack;
-        public int range;
-        public WeaponCard(int _id, string _cardName, int _mo, string _attribute, int _attack, int _range) : base(_id, _cardName, _mo)
-        {
-            this.attack = _attack;
-            this.range = _range;
-        }
-    }
-    //魔法卡类 继承自卡牌类
-    public class MagicCard : Card
-    {
-        public int rank;
-        public string type;
-        public string effect;
-        public MagicCard(int _id, string _cardName, int _mo, string _attribute, int _rank, string _type, string _effect) : base(_id, _cardName, _mo)
-        {
-            this.rank = _rank;
-            this.type = _type;
-            this.effect = _effect;
-        }
-    }
 }
+
+
 
 
 

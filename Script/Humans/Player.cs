@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class Player : Singleton<Player>
 {
+    public const int _drawCardCount = 3;
     #region 
     //Player status
     public PlayerStatusData playerStatus;
     public bool IsDead = false;
     #endregion
 
+    public int drawCardCount = 3;
     //Player pysical
     #region
     public Vector2 moveDir;

@@ -36,14 +36,15 @@ public class BattleCard : MonoBehaviour, IPointerDownHandler
             //可以攻击敌方的卡牌
             if (transform.GetComponent<CardDisplay>().card is Card)
             {
-                BattleManager.Instance.AttackRequst(transform.position, 0, transform.gameObject);
+                BattleManager.Instance.AttackRequest(transform.position, 0, transform.gameObject);
             }
             //可以对自己使用的卡牌
             else if (transform.GetComponent<CardDisplay>().card is Card)
             {
-                BattleManager.Instance.UseRequst(transform.position, 1, transform.gameObject);
+                BattleManager.Instance.UseRequest(transform.position, 1, transform.gameObject);
             }   
         }
+        Destroy(gameObject);
 
     }
 }

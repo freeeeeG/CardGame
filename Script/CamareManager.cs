@@ -20,7 +20,7 @@ public class CamareManager : Singleton<CamareManager>
     void Update()
     {   
         mousePos = Input.mousePosition;
-        camarePoint.transform.position = new Vector3((mousePos.x-960f)/speed_k,camarePoint.transform.position.y, camarePoint.transform.position.z);
+        camarePoint.transform.position = new Vector3((mousePos.x-960f)/speed_k,(mousePos.y-540f)/speed_k, camarePoint.transform.position.z);
     }
 }
     

@@ -73,7 +73,7 @@ public class CardData : MonoBehaviour
                 var feildcard = cards as FeildCard;
                 Debug.Log("这是场地卡 " + "卡牌名称:" + feildcard.cardName + " 卡牌id:" + feildcard.id + "卡牌墨:" + feildcard.mo+"卡牌效果:"+feildcard.effect+"卡牌类型："+feildcard.type);
             }
-           
+            
         }
     }
 

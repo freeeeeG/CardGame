@@ -26,7 +26,7 @@ public class CardBlock : MonoBehaviour, IPointerClickHandler
     {
         if(Card.GetComponent<CardDisplay>().card is Card)
         {
-            BattleManager.Instance.UseRequst(transform.position, 1, transform.gameObject);
+            BattleManager.Instance.UseRequest(transform.position, 1, transform.gameObject);
         }
     }
     public void CloseAll()

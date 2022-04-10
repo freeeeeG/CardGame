@@ -1,10 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
-
-public class UIManager : Singleton<UIManager>
+public class BaseSkill : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()
@@ -17,6 +15,4 @@ public class UIManager : Singleton<UIManager>
     {
         
     }
-
-
 }
