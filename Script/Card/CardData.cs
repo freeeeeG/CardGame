@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class CardData : MonoBehaviour
+using System.IO;
+public class CardData : Singleton<CardData>
 {
     public List<Card> CardList = new List<Card>(); // 存储卡牌数据的链表
+
+    
     public TextAsset cardListData; // 卡牌数据txt文件
     // Start is called before the first frame update
 
@@ -40,40 +42,58 @@ public class CardData : MonoBehaviour
                 int id = int.Parse(rowArray[1]);
                 string name = rowArray[2];
                 int mo = int.Parse(rowArray[3]);
-                string attribute = rowArray[4];
                 
-                string type = rowArray[5];
-        
-                string effect = rowArray[6];
-                CardList.Add(new SpellCard(id, name,  mo,attribute, type, effect ));
+                
+                
+                string effect = rowArray[4];
+                CardList.Add(new SpellCard(id, name,  mo, effect ));
             }
-            else if (rowArray[0] == "feild")
+
+            else if(rowArray[0]=="side")
             {
                 int id = int.Parse(rowArray[1]);
                 string name = rowArray[2];
                 int mo = int.Parse(rowArray[3]);
                 string type = rowArray[4];
                 string effect = rowArray[5];
-                CardList.Add(new FeildCard(id, name,mo, type, effect));
+                CardList.Add(new SideCard(id, name, mo, effect));
+            }
+            else if(rowArray[0]== "divination")
+            {
+                int id = int.Parse(rowArray[1]);
+                string name = rowArray[2];
+                int mo = int.Parse(rowArray[3]);
+                
+                string effect = rowArray[6];
+                int front_id= int.Parse(rowArray[4]);
+                int back_id= int.Parse(rowArray[5]);
+                CardList.Add(new DivinationCard(id, name, mo,  effect,front_id,back_id));
+            }
+            else if(rowArray[0]=="combine")
+            {
+                int id = int.Parse(rowArray[1]);
+                string name = rowArray[2];
+                int mo = int.Parse(rowArray[3]);
+                string attibute = rowArray[4];
+                string effect = rowArray[6];
+                
+                string back_name = rowArray[5];
+
+                CardList.Add(new CombineCard(id, name, mo, attibute, effect, back_name));
             }
         }
     
     }
-    void TestCard()  //测试读取到的卡牌
+    public void TestCard()  //测试读取到的卡牌
     {
         foreach (var cards in CardList)
         {
             if(cards is SpellCard)
             {
                 var spellcard =cards as SpellCard;
-                Debug.Log("这是属性卡 "+"卡牌名称:" + spellcard.cardName + " 卡牌id:" + spellcard.id + "卡牌墨:" + spellcard.mo + "卡牌属性:" + spellcard.attribute+"卡牌效果"+spellcard.effect);
+                Debug.Log("这是属性卡 "+"卡牌名称:" + spellcard.cardName + " 卡牌id:" + spellcard.id + "卡牌墨:" + spellcard.mo + "卡牌属性:" +"卡牌效果"+spellcard.effect);
             }
-            if(cards is FeildCard)
-            {
-                var feildcard = cards as FeildCard;
-                Debug.Log("这是场地卡 " + "卡牌名称:" + feildcard.cardName + " 卡牌id:" + feildcard.id + "卡牌墨:" + feildcard.mo+"卡牌效果:"+feildcard.effect+"卡牌类型："+feildcard.type);
-            }
-            
+
         }
     }
 
@@ -104,13 +124,13 @@ public class CardData : MonoBehaviour
         if (card is SpellCard)
         {
             var spellcard = card as SpellCard;
-            copyCard = new SpellCard(_id, spellcard.cardName, spellcard.mo,spellcard.attribute, spellcard.type, spellcard.effect);
+            copyCard = new SpellCard(_id, spellcard.cardName, spellcard.mo, spellcard.effect);
         }
-        else if (card is FeildCard)
-        {
-            var feildcard = card as FeildCard;
-            copyCard = new FeildCard(_id, feildcard.cardName, feildcard.mo, feildcard.type, feildcard.effect);
-        }
+
         return copyCard;
+    }
+    public List <Card>  GetCard()
+    {
+        return CardList;
     }
 }
