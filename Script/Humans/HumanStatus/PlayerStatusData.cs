@@ -22,8 +22,6 @@ public class PlayerStatusData : ScriptableObject
     public void Init(){
         level = 1;
         exp = 0;
-        maxExp = 100;
-        maxHp = 100;
         hp = maxHp;
         attack = 10;
         speed = 10;

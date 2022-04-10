@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DeckManager : MonoBehaviour
+public class DeckManager : Singleton<DeckManager>
 {
     public GameObject cardLabel;
     public GameObject panel;

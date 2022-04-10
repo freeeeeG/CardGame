@@ -8,7 +8,7 @@ public class CardBlock : MonoBehaviour, IPointerClickHandler
     public GameObject summonBlock;
     public GameObject attackBlock;// not require
     public bool hasMonster;
-    public GameObject monsterCard;
+    public GameObject Card;
 
     // Start is called before the first frame update
 
@@ -17,13 +17,17 @@ public class CardBlock : MonoBehaviour, IPointerClickHandler
     {
 
     }
-    public void SetSummon()
-    {
-        summonBlock.SetActive(true);
-    }
     public void SetAttack()
     {
         attackBlock.SetActive(true);
+    }
+
+    public void UseSkill()
+    {
+        if(Card.GetComponent<CardDisplay>().card is Card)
+        {
+            BattleManager.Instance.UseRequest(transform.position, 1, transform.gameObject);
+        }
     }
     public void CloseAll()
     {
@@ -33,11 +37,7 @@ public class CardBlock : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (summonBlock.activeInHierarchy)
-        {
-            // BattleManager.SummonCofirm(transform);
-            //hasMonster = true;
-        }
-        //Debug.Log("click block");
+        
+        
     }
 }

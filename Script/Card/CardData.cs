@@ -94,7 +94,6 @@ public class CardData : Singleton<CardData>
                 Debug.Log("这是属性卡 "+"卡牌名称:" + spellcard.cardName + " 卡牌id:" + spellcard.id + "卡牌墨:" + spellcard.mo + "卡牌属性:" +"卡牌效果"+spellcard.effect);
             }
 
-           
         }
     }
 

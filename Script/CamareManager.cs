@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CamareManager : MonoBehaviour
+public class CamareManager : Singleton<CamareManager>
 {
 
 
@@ -20,10 +20,6 @@ public class CamareManager : MonoBehaviour
     void Update()
     {   
         mousePos = Input.mousePosition;
-        
-
-        camarePoint.transform.position = new Vector3((mousePos.x-960f)/speed_k,camarePoint.transform.position.y, camarePoint.transform.position.z);
-        Debug.Log(mousePos);
     }
 }
     
