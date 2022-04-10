@@ -59,11 +59,11 @@ public class SideCard : Card
    
     public string effect;
 
-
+    public SideCard(int _id, string _cardName,int _mo, string _effect) : base(_id, _cardName,_mo)
     {
-        
         this.effect = _effect;
     }
+
 
 }
 //卦象牌，需要使用八卦牌才会加入手牌的牌，frontid和backid表示需要的前后八卦牌的卡牌id
