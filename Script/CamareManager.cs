@@ -24,7 +24,7 @@ public class CamareManager : Singleton<CamareManager>
 
     public void Shake()
     {
-        Camera.main.transform.DOShakePosition(0.1f, 0.1f, 20, 90, false, true);
+        Camera.main.transform.DOShakePosition(0.2f, 0.5f, 14, 90, false, true);
         Debug.Log("shake");
     }
 }
