@@ -84,7 +84,9 @@ public class BattleManager : Singleton<BattleManager>
     {
         if (_player == 0)
         {
-            for (int i = 0; i < _number; i++)
+
+            if(playerHandsCounts < 5)
+            for (int i = 0; i < _number &&  playerHandsCounts < 5; i++)
             {
                 playerHands[playerHandsCounts].SetActive(true);
                 playerHandsCounts++;
@@ -92,7 +94,11 @@ public class BattleManager : Singleton<BattleManager>
                 // newCard.GetComponent<CardDisplay>().card = playerDeckList[0];
                 // playerDeckList.RemoveAt(0);
             }
-
+            else
+            {
+                playerHands[playerHandsCounts].SetActive(true);
+                playerHandsCounts++;
+            }
         }
     }
 

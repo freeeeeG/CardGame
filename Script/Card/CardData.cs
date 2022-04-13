@@ -10,11 +10,14 @@ public class CardData : Singleton<CardData>
     public TextAsset cardListData; // 卡牌数据txt文件
     // Start is called before the first frame update
 
-    void Start()
-    {
+    private void OnEnable() {
         // Debug.Log("执行");
         LordCardList();
         TestCard();
+    }
+    void Start()
+    {
+
     }
 
     //加载卡组

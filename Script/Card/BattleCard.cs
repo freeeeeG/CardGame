@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using System.Threading;
+using System.Collections;
 public enum CardState //位置和所属状态
 {
     inPlayerHand
@@ -81,8 +83,20 @@ public class BattleCard : MonoBehaviour, IPointerDownHandler, IPointerExitHandle
         BattleManager.Instance.playerHandsCounts--;
         transform.position = oringinalPosition;
         Debug.Log("UseCard");
-        CamareManager.Instance.Shake();
+        // TODO: 动画
+
+        CamareManager.Instance.PlayerFollow();
+        StartCoroutine(UseCardWaitForSeconds(3));     
+
+    }
+    IEnumerator UseCardWaitForSeconds(float time)
+    {
+        yield return new WaitForSeconds(time);
+        Debug.Log("WaitForSeconds");
+
+        CamareManager.Instance.CentreScreen();
         this.gameObject.SetActive(false);
+        CamareManager.Instance.Shake();
         BattleManager.Instance.HandCardSort(id);
         if (cardState == CardState.inPlayerHand && BattleManager.Instance.currentPhase == GamePhase.playerAction)
         {
@@ -98,5 +112,4 @@ public class BattleCard : MonoBehaviour, IPointerDownHandler, IPointerExitHandle
             }   
         }
     }
-
 }

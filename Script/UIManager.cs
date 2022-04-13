@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,23 +21,48 @@ public class UIManager : Singleton<UIManager>
     #region BagUI
     [Header("Bag UI")]
     public GameObject[] elements;
-    public GameObject[] sideCard;
+    public GameObject[] sideCard = new GameObject[100];
     public GameObject combineCard;
     public string[] eleList = { "金", "木", "水", "火", "土" };
+    public GameObject sideCPrefab;
+    public GameObject sideCGroup;
     #endregion
 
     // string[] txtRight = new string[100];
-    string[] txtLeft = new string[10];
-    string[] combine = new string[10];
+    string[] txtLeft = new string[100];
+    string[] combine = new string[100];
 
     bool[] select = new bool[2] { true, false };
     tRight[] txtRight = new tRight[100];
+
+
     void Start()
     {
+        int j = 0;
+        cardList = CardData.Instance.CardList;
+        foreach (var items in cardList)
+        {
+            if (items is CombineCard)
+            {
+                var combCard = items as CombineCard;
+                Debug.Log(combCard.back_name);
+                txtLeft[j] = combCard.back_name;
+                j++;
+            }
+        }
+
+        for (int i = 0; i < 20; i++)
+        {
+            GameObject newsideC = GameObject.Instantiate(sideCPrefab, sideCGroup.transform);
+            sideCard[i] = newsideC;
+            sideCard[i].GetComponentInChildren<TextMeshProUGUI>().text = txtLeft[i];
+        }
+
         for (int i = 0; i < elements.Length; i++)
         {
             elements[i].GetComponentInChildren<TextMeshProUGUI>().text = eleList[i];
         }
+
     }
 
     // Update is called once per frame
@@ -53,6 +79,9 @@ public class UIManager : Singleton<UIManager>
     public void ElementUIClickEvent(GameObject ele)
     {
         select[0] = !select[0];
+        // Array.Clear(txtLeft, 0, txtLeft.Length);
+        // Array.Clear(txtRight, 0, txtRight.Length);
+        // Array.Clear(combine, 0, combine.Length);
         string left = ele.GetComponentInChildren<TextMeshProUGUI>().text;
         int i = 0, j = 0;
         Debug.Log(left);
@@ -84,7 +113,7 @@ public class UIManager : Singleton<UIManager>
                 j %= sideCard.Length;
             sideCard[j].GetComponentInChildren<TextMeshProUGUI>().text = item.side;
             j++;
-            Debug.Log("sidecard: " + sideCard[j].GetComponentInChildren<TextMeshProUGUI>().text);
+            // Debug.Log("sidecard: " + sideCard[j].GetComponentInChildren<TextMeshProUGUI>().text);
         }
 
     }
@@ -93,7 +122,11 @@ public class UIManager : Singleton<UIManager>
     public void SideCardUIClickEvent(GameObject ele)
     {
         select[1] = !select[0];
+        // Array.Clear(txtLeft, 0, txtLeft.Length);
+        // Array.Clear(txtRight, 0, txtRight.Length);
+        // Array.Clear(combine, 0, combine.Length);
         string right = ele.GetComponentInChildren<TextMeshProUGUI>().text;
+
         int i = 0, j = 0;
         cardList = CardData.Instance.CardList;
         foreach (var item in cardList)
@@ -106,7 +139,7 @@ public class UIManager : Singleton<UIManager>
                 {
                     txtLeft[i] = comCard.attribute;
                     combine[i] = txtRight[i].combine;
-                    Debug.Log("get: " + i + txtLeft[i]);
+                    // Debug.Log("get: " + i + txtLeft[i]);
                     i++;
                 }
             }
@@ -140,5 +173,6 @@ public class UIManager : Singleton<UIManager>
     {
 
     }
+
 }
 
