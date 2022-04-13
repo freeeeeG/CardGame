@@ -21,7 +21,7 @@ public class PlayerCardData : MonoBehaviour
 
         foreach (var card in cardlist)
         {
-            Debug.Log("" + card.cardName);
+            // Debug.Log("" + card.cardName);
         }
         //LoadPlayerData();  //再读取玩家数据
     }
@@ -34,7 +34,7 @@ public class PlayerCardData : MonoBehaviour
     {
         List<string> datas = new List<string>();
         string path = Application.dataPath + "/Datas/test.csv";
-        Debug.Log(totalCoins);
+        // Debug.Log(totalCoins);
         datas.Add("coins," + totalCoins.ToString());
         for (int i = 0; i < playerCards.Length; i++)
         {
@@ -52,7 +52,7 @@ public class PlayerCardData : MonoBehaviour
         }
         foreach (var item in datas)
         {
-            Debug.Log(item);
+            // Debug.Log(item);
         }
         File.WriteAllLines(path, datas);
         

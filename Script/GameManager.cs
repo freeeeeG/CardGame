@@ -10,12 +10,17 @@ public class GameManager : Singleton<GameManager>
     // Start is called before the first frame update
     void Start()
     {
-        
+        battleScene = GameObject.Find("BattleScene");
     }
 
     // Update is called once per frame
 
     private void Update() {
+
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            BattleManager.Instance.currentPhase = GamePhase.gameStart;
+        }
         if(BattleManager.Instance.currentPhase == GamePhase.gameStart)
         {
             //TODO: 加载场景，敌人出现

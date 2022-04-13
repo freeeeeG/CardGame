@@ -7,7 +7,7 @@ public enum CardState //位置和所属状态
 public class BattleCard : MonoBehaviour, IPointerDownHandler, IPointerExitHandler,IPointerUpHandler,IPointerEnterHandler
 {
     public BattleManager BattleManager;
-
+    public int id;
     public CardState cardState = CardState.inPlayerHand;
 
     public bool hasAttacked;
@@ -15,6 +15,7 @@ public class BattleCard : MonoBehaviour, IPointerDownHandler, IPointerExitHandle
     public Vector3 mousePos;
     public RectTransform rectTransform;
     public bool isCardFolled = false;
+
 
     // Start is called before the first frame update
     void Start()
@@ -28,50 +29,61 @@ public class BattleCard : MonoBehaviour, IPointerDownHandler, IPointerExitHandle
     void Update()
     {
         mousePos = Input.mousePosition;
+
         if(isCardFolled)
         {
             transform.position = new Vector3(mousePos.x, mousePos.y, transform.position.z);
         }
-        if(transform.position.y > 500f)
-        {
-            UseCard();
-            Destroy(gameObject);
-        }
+
+
+
     }
 
 
     #region PointerEvent
     public void OnPointerDown(PointerEventData eventData)
     {
-        isCardFolled = true;
-        transform.localScale = new Vector3(1f, 1f, 1f);
-        transform.SetAsLastSibling();
+        if(BattleManager.Instance.currentPhase == GamePhase.playerAction)
+        {
+            isCardFolled = true;
+            transform.localScale = new Vector3(1f, 1f, 1f);
+        }
         // rectTransform.position -= new Vector3(0, 0, 1);
 
     }
     public void OnPointerUp(PointerEventData eventData)
     {
-
-        isCardFolled = false;
-        transform.position = oringinalPosition;
-        // rectTransform.position += new Vector3(0, 0, 1);
+        if(BattleManager.Instance.currentPhase == GamePhase.playerAction)
+        {
+            if(transform.position.y > 500f)
+            UseCard();
+            isCardFolled = false;
+            transform.position = oringinalPosition;
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log("enter card");
+        transform.SetAsLastSibling();
+        if(BattleManager.Instance.currentPhase == GamePhase.playerAction)
         transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        Debug.Log("exit card");
+        if(BattleManager.Instance.currentPhase == GamePhase.playerAction)
         transform.localScale = new Vector3(1f, 1f, 1f);
     }
 
     #endregion
     void UseCard()
     {
+        BattleManager.Instance.playerHandsCounts--;
+        transform.position = oringinalPosition;
+        Debug.Log("UseCard");
+        CamareManager.Instance.Shake();
+        this.gameObject.SetActive(false);
+        BattleManager.Instance.HandCardSort(id);
         if (cardState == CardState.inPlayerHand && BattleManager.Instance.currentPhase == GamePhase.playerAction)
         {
             //可以攻击敌方的卡牌

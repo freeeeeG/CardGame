@@ -23,7 +23,7 @@ public class SkillDataManager : Singleton<SkillDataManager>
         {
             foreach (var i in item)
             {
-                Debug.Log(i);
+                // Debug.Log(i);
             }
         }
     }

@@ -33,7 +33,7 @@ public class BattleManager : Singleton<BattleManager>
     public GameObject playerIcon;
     public GameObject enemyIcon;
     //回合阶段
-    public GamePhase currentPhase;
+    public GamePhase currentPhase = GamePhase.gameStart;
 
     private CardData cardDate;
     private int waitingID;
@@ -41,7 +41,7 @@ public class BattleManager : Singleton<BattleManager>
     private int attackingID;
     
 
-    public bool isPlayerTurn;
+    public bool isPlayerTurn = true;
     // Start is called before the first frame update
 
 
@@ -49,13 +49,14 @@ public class BattleManager : Singleton<BattleManager>
 
     public void GameStart()
     {
-
         // 敌方先手
+        Debug.Log("Game Start");
         if(isPlayerTurn)
         currentPhase = GamePhase.playerDraw;
         else
         currentPhase = GamePhase.enemyAction;
         ReadDeck();
+        OnPlayerDrawCard();
     }
 
 
@@ -85,10 +86,11 @@ public class BattleManager : Singleton<BattleManager>
         {
             for (int i = 0; i < _number; i++)
             {
-                GameObject newCard = GameObject.Instantiate(cardPrefab,playerHands[playerHandsCounts+1].transform);
-                playerHandsCounts--;
-                newCard.GetComponent<CardDisplay>().card = playerDeckList[0];
-                playerDeckList.RemoveAt(0);
+                playerHands[playerHandsCounts].SetActive(true);
+                playerHandsCounts++;
+                // TODO: 显示抽到的牌
+                // newCard.GetComponent<CardDisplay>().card = playerDeckList[0];
+                // playerDeckList.RemoveAt(0);
             }
 
         }
@@ -101,6 +103,7 @@ public class BattleManager : Singleton<BattleManager>
     {
         if (currentPhase == GamePhase.playerDraw)
         {
+            Debug.Log("抽牌");
             DrawCard(0, Player.Instance.drawCardCount);
             currentPhase = GamePhase.playerAction;
         }
@@ -114,14 +117,26 @@ public class BattleManager : Singleton<BattleManager>
         if (currentPhase == GamePhase.playerAction)
         {
             currentPhase = GamePhase.enemyAction;
+            OnEnemyAction();
         }
         else if (currentPhase == GamePhase.enemyAction)
         {
             currentPhase = GamePhase.playerDraw;
+            OnPlayerDrawCard();
         }
 
         //TODO: 更新回合(八卦牌)
         
+    }
+
+    public void OnEnemyAction()
+    {
+        if (currentPhase == GamePhase.enemyAction)
+        {
+            //TODO: 敌方行动
+            TurnEnd();
+        }
+
     }
 
 
@@ -190,14 +205,14 @@ public class BattleManager : Singleton<BattleManager>
         attackingID = _player;
 
     }
+    public void HandCardSort(int id)
+    {
+        for(int i = id; i < playerHandsCounts; i++)
+        {
+            playerHands[i].SetActive(true);
 
-    public void SummonCofirm(Transform _block) // 召唤确认，点击格子时触发
-    {
-        Summon(waitingMonster, waitingID, _block);
-        waitingMonster = null;
+        }
+        playerHands[playerHandsCounts].SetActive(false);
     }
-    public void Summon(GameObject _monster, int _id, Transform _block)
-    {
-        //TODO：召唤人物或者移动到格子
-    }
+
 }

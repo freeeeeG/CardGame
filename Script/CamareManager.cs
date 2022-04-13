@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using DG.Tweening;
 public class CamareManager : Singleton<CamareManager>
 {
 
@@ -20,6 +20,12 @@ public class CamareManager : Singleton<CamareManager>
     void Update()
     {   
         mousePos = Input.mousePosition;
+    }
+
+    public void Shake()
+    {
+        Camera.main.transform.DOShakePosition(0.1f, 0.1f, 20, 90, false, true);
+        Debug.Log("shake");
     }
 }
     

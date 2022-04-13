@@ -41,7 +41,7 @@ public class SpellCard : Card
 public class CombineCard:Card
 {
     public string effect;   //卡牌效果
-    public string attribute;  //属性 金 木 水 火 土 无
+    public string attribute;  //属性 
     public string back_name;    //旁卡牌名称
     public CombineCard(int _id,string _cardName,int _mo,string _attribute, string _effect, string _back_name):base(_id, _cardName, _mo)
     {

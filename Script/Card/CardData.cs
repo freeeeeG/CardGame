@@ -12,7 +12,7 @@ public class CardData : Singleton<CardData>
 
     void Start()
     {
-        Debug.Log("执行");
+        // Debug.Log("执行");
         LordCardList();
         TestCard();
     }
@@ -20,7 +20,7 @@ public class CardData : Singleton<CardData>
     //加载卡组
     public void LordCardList()
     {
-        Debug.Log("执行2");
+        // Debug.Log("执行2");
         string[] dataArray = cardListData.text.Split('\n');
         foreach (var row in dataArray)
         {
@@ -38,7 +38,7 @@ public class CardData : Singleton<CardData>
             }
             else if (rowArray[0] == "spell")
             {
-                Debug.Log("执行2");
+                // Debug.Log("执行2");
                 int id = int.Parse(rowArray[1]);
                 string name = rowArray[2];
                 int mo = int.Parse(rowArray[3]);
@@ -88,10 +88,10 @@ public class CardData : Singleton<CardData>
     {
         foreach (var cards in CardList)
         {
-            if(cards is SpellCard)
+            if(cards is CombineCard)
             {
-                var spellcard =cards as SpellCard;
-                Debug.Log("这是属性卡 "+"卡牌名称:" + spellcard.cardName + " 卡牌id:" + spellcard.id + "卡牌墨:" + spellcard.mo + "卡牌属性:" +"卡牌效果"+spellcard.effect);
+                var combineCard =cards as CombineCard;
+                // Debug.Log(combineCard.attribute + combineCard.back_name);
             }
 
         }
