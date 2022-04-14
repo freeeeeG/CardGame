@@ -257,6 +257,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: LCard
       objectReference: {fileID: 0}
+    - target: {fileID: 6829969246293102273, guid: 7a439db2e1cd6fa4387792c5042dd0bc, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8880934969274816138, guid: 7a439db2e1cd6fa4387792c5042dd0bc, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2092,6 +2096,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   camarePoint: {fileID: 1026841163}
   mousePos: {x: 0, y: 0, z: 0}
+  CM: {fileID: 1148377838}
   speed_k: 850
 --- !u!1 &767767256
 GameObject:
@@ -3703,7 +3708,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1062349477
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3959,7 +3964,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1148377838
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4277,7 +4282,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1197442404
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5057,7 +5062,7 @@ MonoBehaviour:
   - "\u6C34"
   - "\u706B"
   - "\u571F"
-  sideCPrefab: {fileID: 5275910948650163767, guid: 4bd3773cf0053994e86e4980da3eb4bf, type: 3}
+  sideCPrefab: {fileID: 7831660086848132360, guid: 8f6bf561873aef14fbe11562b81ead40, type: 3}
   sideCGroup: {fileID: 1590319785}
 --- !u!1 &1359658180 stripped
 GameObject:
@@ -7615,7 +7620,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1963430504
 RectTransform:
   m_ObjectHideFlags: 0
