@@ -77,12 +77,12 @@ public class CardData : Singleton<CardData>
                 int id = int.Parse(rowArray[1]);
                 string name = rowArray[2];
                 int mo = int.Parse(rowArray[3]);
-                string attibute = rowArray[4];
+                string attribute = rowArray[4];
                 string effect = rowArray[6];
                 
                 string back_name = rowArray[5];
 
-                CardList.Add(new CombineCard(id, name, mo, attibute, effect, back_name));
+                CardList.Add(new CombineCard(id, name, mo, attribute, effect, back_name));
             }
         }
     

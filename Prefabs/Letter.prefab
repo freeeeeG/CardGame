@@ -66,10 +66,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Ball
+  m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: c3fa0011c819044489cdc1c613163eb3, type: 2}
-  m_sharedMaterial: {fileID: 9076080529600766209, guid: c3fa0011c819044489cdc1c613163eb3, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 6053f503d38cd564680eab032a66deeb, type: 2}
+  m_sharedMaterial: {fileID: -6774656376743520225, guid: 6053f503d38cd564680eab032a66deeb, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -93,8 +93,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
-  m_fontSizeBase: 40
+  m_fontSize: 70
+  m_fontSizeBase: 70
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
