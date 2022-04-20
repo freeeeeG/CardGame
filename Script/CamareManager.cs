@@ -10,7 +10,7 @@ public class CamareManager : Singleton<CamareManager>
     public GameObject camarePoint;
     public Vector3 mousePos;
     public CinemachineVirtualCamera CM;
-
+    public bool followPlayerFlag = false;
     public float speed_k = 1;
     // Start is called before the first frame update
     void Start()
@@ -20,8 +20,13 @@ public class CamareManager : Singleton<CamareManager>
 
     // Update is called once per frame
     void Update()
-    {   
+    {
         mousePos = Input.mousePosition;
+        if (followPlayerFlag)
+            CentreFollow();
+        else
+            CentreScreen();
+
     }
 
     public void Shake()
@@ -32,9 +37,9 @@ public class CamareManager : Singleton<CamareManager>
     }
 
 
-    public void PlayerFollow()
+    public void CentreFollow()
     {
-        camarePoint.transform.position = Player.Instance.transform.position;
+        camarePoint.transform.position = new Vector3((Enemy.Instance.transform.position.x + Player.Instance.transform.position.x) / 2, camarePoint.transform.position.y, camarePoint.transform.position.z);
         CM.m_Lens.OrthographicSize = 3;
     }
     public void CentreScreen()
@@ -43,4 +48,3 @@ public class CamareManager : Singleton<CamareManager>
         CM.m_Lens.OrthographicSize = 5;
     }
 }
-    

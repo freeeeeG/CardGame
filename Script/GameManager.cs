@@ -44,6 +44,6 @@ public class GameManager : Singleton<GameManager>
     {
         //TODO: Restart
         restart = false;
-        Player.Instance.playerStatus.Init();
+        Player.Instance.data.datas.Init();
     }
 }

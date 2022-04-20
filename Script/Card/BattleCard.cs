@@ -10,13 +10,13 @@ public class BattleCard : MonoBehaviour, IPointerDownHandler, IPointerExitHandle
 {
     public BattleManager BattleManager;
     public int id;
-    public CardState cardState = CardState.inPlayerHand;
-
     public bool hasAttacked;
     public Vector3 oringinalPosition;
     public Vector3 mousePos;
     public RectTransform rectTransform;
     public bool isCardFolled = false;
+
+
 
 
     // Start is called before the first frame update
@@ -58,9 +58,9 @@ public class BattleCard : MonoBehaviour, IPointerDownHandler, IPointerExitHandle
         if(BattleManager.Instance.currentPhase == GamePhase.playerAction)
         {
             if(transform.position.y > 500f)
-            UseCard();
-            isCardFolled = false;
             transform.position = oringinalPosition;
+            isCardFolled = false;
+            UseCard();
         }
     }
 
@@ -75,6 +75,7 @@ public class BattleCard : MonoBehaviour, IPointerDownHandler, IPointerExitHandle
     {
         if(BattleManager.Instance.currentPhase == GamePhase.playerAction)
         transform.localScale = new Vector3(1f, 1f, 1f);
+
     }
 
     #endregion
@@ -84,32 +85,34 @@ public class BattleCard : MonoBehaviour, IPointerDownHandler, IPointerExitHandle
         transform.position = oringinalPosition;
         Debug.Log("UseCard");
         // TODO: 动画
+        BattleManager.Instance.HandCardSort(id,gameObject);
+        CamareManager.Instance.followPlayerFlag = true;
+        SceneManagers.Instance.followMouseFlag = false;
+        // 离开屏幕外面
+        StartCoroutine(UseCardWaitForSeconds(1));
 
-        CamareManager.Instance.PlayerFollow();
-        StartCoroutine(UseCardWaitForSeconds(3));     
 
     }
     IEnumerator UseCardWaitForSeconds(float time)
     {
         yield return new WaitForSeconds(time);
         Debug.Log("WaitForSeconds");
-
-        CamareManager.Instance.CentreScreen();
-        this.gameObject.SetActive(false);
+        CamareManager.Instance.followPlayerFlag = false;
+        SceneManagers.Instance.followMouseFlag = true;
         CamareManager.Instance.Shake();
-        BattleManager.Instance.HandCardSort(id);
-        if (cardState == CardState.inPlayerHand && BattleManager.Instance.currentPhase == GamePhase.playerAction)
+        if (BattleManager.Instance.currentPhase == GamePhase.playerAction)
         {
             //可以攻击敌方的卡牌
             if (transform.GetComponent<CardDisplay>().card is Card)
             {
-                BattleManager.Instance.AttackRequest(transform.position, 0, transform.gameObject);
+                // BattleManager.Instance.AttackRequest(transform.position, 0, transform.gameObject);
             }
-            //可以对自己使用的卡牌
-            else if (transform.GetComponent<CardDisplay>().card is Card)
-            {
-                BattleManager.Instance.UseRequest(transform.position, 1, transform.gameObject);
-            }   
-        }
+
+        }     
+        transform.position = oringinalPosition;
+        if(id == BattleManager.Instance.playerHandsCounts)
+            gameObject.SetActive(false);    
+
+
     }
 }

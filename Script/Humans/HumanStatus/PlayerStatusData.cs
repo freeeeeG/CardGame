@@ -19,6 +19,7 @@ public class PlayerStatusData : ScriptableObject
     public int money;
     public int cardNum;
     public int maxCardNum;
+    
     public void Init(){
         level = 1;
         exp = 0;

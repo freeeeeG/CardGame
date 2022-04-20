@@ -13,6 +13,6 @@ public class id_101 : CombineCard
     public override void Skill()
     {
         Debug.Log("灵魂火焰");
-        Player.Instance.playerStatus.hp -= 1;
+        Player.Instance.data.hp -= 1;
     }
 }

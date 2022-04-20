@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class SceneManagers : MonoBehaviour
+public class SceneManagers : Singleton<SceneManagers>
 {
 
 
@@ -27,6 +27,7 @@ public class SceneManagers : MonoBehaviour
     public float speed_3 = 1;
     public float speed_4 = 1;
     public Vector3 mousePos;
+    public bool followMouseFlag = true;
 
     // Start is called before the first frame update
     void Start()
@@ -49,6 +50,13 @@ public class SceneManagers : MonoBehaviour
     void Update()
     {
         mousePos = Input.mousePosition;
+        if(followMouseFlag)
+        FollowMouse();
+
+    }
+
+    public void FollowMouse()
+    {
         Scene_0.transform.position = new Vector3((-mousePos.x+960f)*speed_0/1000,(-mousePos.y+540f)*speed_0/1000, 0) + originalPos_0;
         Scene_1.transform.position = new Vector3((-mousePos.x+960f)*speed_1/1000,(-mousePos.y+540f)*speed_1/1000, 0) + originalPos_1;
         Scene_2.transform.position = new Vector3((-mousePos.x+960f)*speed_2/1000,(-mousePos.y+540f)*speed_2/1000, 0) + originalPos_2;

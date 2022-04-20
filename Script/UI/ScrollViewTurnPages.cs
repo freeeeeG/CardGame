@@ -26,9 +26,9 @@ public class ScrollViewTurnPages : MonoBehaviour
         allBtnCount = content.childCount;
         contentWidth = (content.GetComponent<GridLayoutGroup>().cellSize.x + content.GetComponent<GridLayoutGroup>().spacing.x) * 2;
         allPages = Mathf.CeilToInt(allBtnCount / btnCount);
-        delta_x = contentWidth * Mathf.CeilToInt(allBtnCount / btnCount) + content.GetComponent<GridLayoutGroup>().spacing.x;
         showP.GetComponent<TextMeshProUGUI>().text = pages + "/" + allPages;
 
+        delta_x = contentWidth * allPages + content.GetComponent<GridLayoutGroup>().spacing.x;
         content.sizeDelta = new Vector2(delta_x, content.sizeDelta.y);
 
         btnLast.onClick.AddListener(() =>
@@ -59,12 +59,19 @@ public class ScrollViewTurnPages : MonoBehaviour
 
     void Update()
     {
+        delta_x = contentWidth * allPages + content.GetComponent<GridLayoutGroup>().spacing.x;
+
         Debug.Log(UIManager.Instance.isSwitch);
         if (UIManager.Instance.isSwitch)
         {
-            allPages = Mathf.CeilToInt(UIManager.Instance.eachCount / 10) + 1;
-            Debug.Log(allPages);
-            pages = 1;
+            if (UIManager.Instance.eachCount / 10.0 == 1.0)
+                allPages = Mathf.CeilToInt(UIManager.Instance.eachCount / 10);
+            else
+                allPages = Mathf.CeilToInt(UIManager.Instance.eachCount / 10) + 1;
+            // pages = 1;
+            Debug.Log(pages + " " + allPages);
+            content.sizeDelta = new Vector2(delta_x, content.sizeDelta.y);
+            showP.GetComponent<TextMeshProUGUI>().text = pages + "/" + allPages;
         }
     }
 }

@@ -9,13 +9,13 @@ struct tRight
     public string element;
     public string side;
     public string combine;
+    public string describe;
 
 }
 
 public class UIManager : Singleton<UIManager>
 {
     // Start is called before the first frame update
-    public static UIManager instance;
     public List<Card> cardList = new List<Card>();
     #region BagUI
     [Header("Bag UI")]
@@ -25,7 +25,8 @@ public class UIManager : Singleton<UIManager>
     string[] eleList = { "金", "木", "水", "火", "土" };
     public GameObject sideCPrefab;
     public GameObject sideCGroup;
-    #endregion
+
+    public List<CardDisplay> cardDisplays = new List<CardDisplay>();
 
     // string[] txtRight = new string[100];
     string[] txtLeft = new string[10];
@@ -38,13 +39,34 @@ public class UIManager : Singleton<UIManager>
     public int eachCount = 0;
     public bool isSwitch = false;
 
+    #endregion
+
+
+
     void Start()
     {
+
+        BagUIStart();
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
+    #region BagUI
+
+    public void BagUIStart()
+    {
         int j = 0;
+        eachCount = 0;
+        isSwitch = true;
         cardList = CardData.Instance.CardList;
         combineCard.SetActive(false);
         foreach (var items in cardList)
         {
+            // TODO: Add my card from the bag
             if (items is CombineCard)
             {
                 var combCard = items as CombineCard;
@@ -62,21 +84,17 @@ public class UIManager : Singleton<UIManager>
             newsideC.GetComponent<Button>().onClick.AddListener(() => SideCardUIClickEvent(newsideC));
             sideCard[i] = newsideC;
             sideCard[i].GetComponentInChildren<TextMeshProUGUI>().text = txtRight[i].side;
-            // Debug.Log(txtRight[i].side);
+            if (txtRight[i].side != null)
+            {
+                eachCount++;
+            }
         }
         //元素卡赋值
         for (int i = 0; i < elements.Length; i++)
         {
             elements[i].GetComponentInChildren<TextMeshProUGUI>().text = eleList[i];
         }
-
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-    }
-
     public void ElementUIClickEvent(GameObject ele)
     {
         combineCard.SetActive(true);
@@ -107,7 +125,7 @@ public class UIManager : Singleton<UIManager>
                         var eleCard = items as CombineCard;
                         if (left == eleCard.attribute && tempo_r == eleCard.back_name)
                         {
-                            combineCard.GetComponentInChildren<TextMeshProUGUI>().text = eleCard.cardName;
+                            combineCard.transform.GetChild(0).GetComponentInChildren<TextMeshProUGUI>().text = eleCard.cardName;
                         }
                     }
                 }
@@ -199,6 +217,7 @@ public class UIManager : Singleton<UIManager>
                 {
                     txtLeft[i] = comCard.attribute;
                     combine[i] = comCard.cardName;
+
                     i++;
                 }
             }
@@ -208,16 +227,20 @@ public class UIManager : Singleton<UIManager>
         {
             if (right == item.side)
             {
-                combineCard.GetComponentInChildren<TextMeshProUGUI>().text = item.combine;
+                combineCard.transform.GetChild(0).GetComponentInChildren<TextMeshProUGUI>().text = item.combine;
             }
         }
         select[1] = false;
+
+        //TODO: 判断是否可以合成
+        //TODO: 合成卡片
+
     }
 
     public void CombineCardUIClickEvent(GameObject ele)
     {
 
     }
-
+    #endregion
 }
 
