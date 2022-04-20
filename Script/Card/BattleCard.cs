@@ -19,6 +19,9 @@ public class BattleCard : MonoBehaviour, IPointerDownHandler, IPointerExitHandle
 
 
 
+
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -105,7 +108,6 @@ public class BattleCard : MonoBehaviour, IPointerDownHandler, IPointerExitHandle
             //可以攻击敌方的卡牌
             if (transform.GetComponent<CardDisplay>().card is Card)
             {
-                // BattleManager.Instance.AttackRequest(transform.position, 0, transform.gameObject);
             }
 
         }     
