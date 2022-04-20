@@ -7,12 +7,14 @@ public class Card
     public int id;
     public string cardName;
     public int mo;  //墨
+    public int num; //卡牌数量
   
-    public Card(int _id, string _cardName,int _mo)
+    public Card(int _id, string _cardName,int _mo,int _num)
     {
         this.id = _id;
         this.cardName = _cardName;
         this.mo = _mo;
+        this.num = _num;
         
     }
     public virtual void Skill()
@@ -29,7 +31,7 @@ public class SpellCard : Card
     public string effect;  //卡牌效果
     
 
-    public SpellCard(int _id, string _cardName,int _mo, string _effect) : base(_id, _cardName,_mo)
+    public SpellCard(int _id, string _cardName,int _mo, int _num,string _effect) : base(_id, _cardName,_mo,_num)
     {
       
     
@@ -43,7 +45,7 @@ public class CombineCard:Card
     public string effect;   //卡牌效果
     public string attribute;  //属性 
     public string back_name;    //旁卡牌名称
-    public CombineCard(int _id,string _cardName,int _mo,string _attribute, string _effect, string _back_name):base(_id, _cardName, _mo)
+    public CombineCard(int _id,string _cardName,int _mo,int _num,string _attribute,  string _back_name, string _effect) :base(_id, _cardName, _mo,_num)
     {
         this.effect = _effect;
         this.attribute = _attribute;
@@ -59,7 +61,7 @@ public class SideCard : Card
    
     public string effect;
 
-    public SideCard(int _id, string _cardName,int _mo, string _effect) : base(_id, _cardName,_mo)
+    public SideCard(int _id, string _cardName,int _mo, int _num,string _effect) : base(_id, _cardName,_mo,_num)
     {
         this.effect = _effect;
     }
@@ -71,17 +73,16 @@ public class DivinationCard :Card
 {
     
     public string effect;
-    public int front_id;
-    public int back_id;
-    public DivinationCard(int _id,string _cardName,int _mo,string _effect,int _front_id,int _back_id):base(_id,_cardName,_mo)
+    public string[] attibute ;
+    public DivinationCard(int _id,string _cardName,int _mo,int _num,string _effect,string[] _attibute):base(_id,_cardName,_mo,_num)
     {
        
         this.effect = _effect;
-        this.front_id = _front_id;
-        this.back_id = _back_id;
+        this.attibute = _attibute;
     }
 
 }
+
 
 
 // 消耗卡类 继承自卡牌类
@@ -89,7 +90,7 @@ public class ItemCard : Card
 {
     public string effect;
     public string type;
-    public ItemCard(int _id, string _cardName, int _mo, string _attribute, string _type, string _effect) : base(_id, _cardName, _mo)
+    public ItemCard(int _id, string _cardName, int _mo,int _num, string _attribute, string _type, string _effect) : base(_id, _cardName, _mo,_num)
     {
         {
             this.type = _type;

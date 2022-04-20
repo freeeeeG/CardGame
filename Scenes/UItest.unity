@@ -186,7 +186,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f556683a6318c6408ae761980778dcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardListData: {fileID: 4900000, guid: d9b35a249d61e1545a922673e84df192, type: 3}
+  cardListData: {fileID: 4900000, guid: f8d0d1a5f2805a34a9dca4f9aa3cf064, type: 3}
 --- !u!1 &1452186547
 GameObject:
   m_ObjectHideFlags: 0

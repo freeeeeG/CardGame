@@ -5,14 +5,16 @@ public class id_101 : CombineCard
 
 
 
-    public id_101() : base(101, "灵魂火焰", 3, "炎", "灵魂火焰", "灵魂火焰")
+    public id_101() : base(101, "银", 0,0
+, "金", "艮", "对目标造成水银")
     {
 
     }
 
     public override void Skill()
     {
-        Debug.Log("灵魂火焰");
-        Player.Instance.playerStatus.hp -= 1;
+        Debug.Log("银");
+        //TODO:水银（造成：2穿甲伤害/回合，持续：3回合）
+
     }
 }
