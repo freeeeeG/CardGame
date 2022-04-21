@@ -52,7 +52,7 @@ public class ScrollViewTurnPages : MonoBehaviour
             {
                 pages++;
                 showP.GetComponent<TextMeshProUGUI>().text = pages + "/" + allPages;
-                Debug.Log(pages);
+                // Debug.Log(pages);
             }
         });
     }
@@ -61,7 +61,7 @@ public class ScrollViewTurnPages : MonoBehaviour
     {
         delta_x = contentWidth * allPages + content.GetComponent<GridLayoutGroup>().spacing.x;
 
-        Debug.Log(UIManager.Instance.isSwitch);
+        // Debug.Log(UIManager.Instance.isSwitch);
         if (UIManager.Instance.isSwitch)
         {
             if (UIManager.Instance.eachCount / 10.0 == 1.0)
@@ -69,7 +69,7 @@ public class ScrollViewTurnPages : MonoBehaviour
             else
                 allPages = Mathf.CeilToInt(UIManager.Instance.eachCount / 10) + 1;
             // pages = 1;
-            Debug.Log(pages + " " + allPages);
+            // Debug.Log(pages + " " + allPages);
             content.sizeDelta = new Vector2(delta_x, content.sizeDelta.y);
             showP.GetComponent<TextMeshProUGUI>().text = pages + "/" + allPages;
         }

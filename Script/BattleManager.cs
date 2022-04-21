@@ -16,8 +16,8 @@ public class BattleManager : Singleton<BattleManager>
 
     public GameObject enemyHands;
     public Transform canvas;
-    
- 
+
+
     private GameObject waitingMonster;
     public GameObject cardPrefab;
 
@@ -37,7 +37,9 @@ public class BattleManager : Singleton<BattleManager>
     [Header("手牌整理")]
     public int playerHandsCounts; // 手牌数
     public GameObject[] playerHands; // 手牌
-    
+    public float playerHandsDistance = 1152; // 手牌间距
+    public float playerHandsHigh = -281; // 手牌起始高度
+
 
     public bool isPlayerTurn = true;
     // Start is called before the first frame update
@@ -49,10 +51,10 @@ public class BattleManager : Singleton<BattleManager>
     {
         // 敌方先手
         Debug.Log("Game Start");
-        if(isPlayerTurn)
-        currentPhase = GamePhase.playerDraw;
+        if (isPlayerTurn)
+            currentPhase = GamePhase.playerDraw;
         else
-        currentPhase = GamePhase.enemyAction;
+            currentPhase = GamePhase.enemyAction;
         ReadDeck();
         OnPlayerDrawCard();
     }
@@ -73,15 +75,15 @@ public class BattleManager : Singleton<BattleManager>
                 }
             }
         }
-    
+
     }
 
 
     //抽牌
     public void DrawCard(int _player, int _number)
     {
-            if(playerHandsCounts < 5)
-            for (int i = 0; i < _number &&  playerHandsCounts < 5; i++)
+        if (playerHandsCounts < 5)
+            for (int i = 0; i < _number && playerHandsCounts < 5; i++)
             {
                 playerHands[playerHandsCounts].SetActive(true);
                 playerHandsCounts++;
@@ -91,14 +93,14 @@ public class BattleManager : Singleton<BattleManager>
                 // SortCard()，palyerDeckCardCount = 0;
                 // playerHands[playerHandsCounts].GetComponent<CardDisplay>().card = playerDeckList[playerDeckCardCount];
                 // 
-                
+
             }
-            else
-            {
-                playerHands[playerHandsCounts].SetActive(true);
-                playerHandsCounts++;
-            }
-            
+        else
+        {
+            playerHands[playerHandsCounts].SetActive(true);
+            playerHandsCounts++;
+        }
+
     }
 
     #region 每回合生命周期
@@ -110,6 +112,8 @@ public class BattleManager : Singleton<BattleManager>
         {
             Debug.Log("抽牌");
             DrawCard(0, Player.Instance.drawCardCount);
+            HandCardFan();
+            CardByCard();
             currentPhase = GamePhase.playerAction;
         }
     }
@@ -131,7 +135,7 @@ public class BattleManager : Singleton<BattleManager>
         }
 
         //TODO: 更新回合(八卦牌)
-        
+
     }
 
     public void OnEnemyAction()
@@ -145,15 +149,15 @@ public class BattleManager : Singleton<BattleManager>
     }
     #endregion
 
-
-    public void HandCardSort(int id ,GameObject card)
+    //整理手牌
+    public void HandCardSort(int id, GameObject card)
     {
-        for(int i = id; i < playerHandsCounts; i++)
+        for (int i = id; i < playerHandsCounts; i++)
         {
-            playerHands[i].GetComponent<CardDisplay>().card = playerHands[i+1].GetComponent<CardDisplay>().card;
+            playerHands[i].GetComponent<CardDisplay>().card = playerHands[i + 1].GetComponent<CardDisplay>().card;
 
         }
-        if(id == playerHandsCounts)
+        if (id == playerHandsCounts)
         {
             card.transform.position += new Vector3(10000, 0, 0);
         }
@@ -161,6 +165,27 @@ public class BattleManager : Singleton<BattleManager>
         {
             playerHands[playerHandsCounts].SetActive(false);
         }
+        HandCardFan();
+        CardByCard();
+    }
+
+    public void HandCardFan()
+    {
+        float st = 0 - playerHandsDistance / 2;
+        float dx = playerHandsDistance / (playerHandsCounts + 1);
+        float dTheta = 60 / (playerHandsCounts + 1);
+        for (int i = 0; i < playerHandsCounts; i++)
+        {
+            playerHands[i].GetComponent<RectTransform>().anchoredPosition3D = new Vector3(st + dx * (i + 1), playerHandsHigh, 0);
+            playerHands[i].GetComponent<RectTransform>().rotation = new Quaternion(0, 0, 0, 0);
+            playerHands[i].GetComponent<BattleCard>().oringinalPosition = playerHands[i].transform.position;
+        }
+    }
+
+    public void CardByCard()
+    {
+        for (int i = 0; i < playerHandsCounts; i++)
+            playerHands[i].transform.SetAsFirstSibling();
     }
 
 }

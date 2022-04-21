@@ -64,6 +64,7 @@ public class BattleCard : MonoBehaviour, IPointerDownHandler, IPointerExitHandle
             transform.position = oringinalPosition;
             isCardFolled = false;
             UseCard();
+            BattleManager.Instance.CardByCard();
         }
     }
 
@@ -72,13 +73,15 @@ public class BattleCard : MonoBehaviour, IPointerDownHandler, IPointerExitHandle
         transform.SetAsLastSibling();
         if(BattleManager.Instance.currentPhase == GamePhase.playerAction)
         transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+
+
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         if(BattleManager.Instance.currentPhase == GamePhase.playerAction)
         transform.localScale = new Vector3(1f, 1f, 1f);
-
+        BattleManager.Instance.CardByCard();
     }
 
     #endregion
@@ -105,13 +108,10 @@ public class BattleCard : MonoBehaviour, IPointerDownHandler, IPointerExitHandle
         CamareManager.Instance.Shake();
         if (BattleManager.Instance.currentPhase == GamePhase.playerAction)
         {
-            //可以攻击敌方的卡牌
-            if (transform.GetComponent<CardDisplay>().card is Card)
-            {
-            }
 
         }     
         transform.position = oringinalPosition;
+        BattleManager.Instance.CardByCard();
         if(id == BattleManager.Instance.playerHandsCounts)
             gameObject.SetActive(false);    
 
