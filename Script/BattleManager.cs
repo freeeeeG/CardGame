@@ -141,10 +141,10 @@ public class BattleManager : Singleton<BattleManager>
     public void OnEnemyAction()
     {
         if (currentPhase == GamePhase.enemyAction)
-        {
             //TODO: 敌方行动
-            TurnEnd();
-        }
+            StartCoroutine(EnemyAction(Enemy.Instance.EnemyAction()));
+
+
 
     }
     #endregion
@@ -171,13 +171,14 @@ public class BattleManager : Singleton<BattleManager>
 
     public void HandCardFan()
     {
+        Debug.Log("手牌整理");
         float st = 0 - playerHandsDistance / 2;
         float dx = playerHandsDistance / (playerHandsCounts + 1);
         float dTheta = 60 / (playerHandsCounts + 1);
         for (int i = 0; i < playerHandsCounts; i++)
         {
             playerHands[i].GetComponent<RectTransform>().anchoredPosition3D = new Vector3(st + dx * (i + 1), playerHandsHigh, 0);
-            playerHands[i].GetComponent<RectTransform>().rotation = new Quaternion(0, 0, 0, 0);
+
             playerHands[i].GetComponent<BattleCard>().oringinalPosition = playerHands[i].transform.position;
         }
     }
@@ -187,5 +188,9 @@ public class BattleManager : Singleton<BattleManager>
         for (int i = 0; i < playerHandsCounts; i++)
             playerHands[i].transform.SetAsFirstSibling();
     }
-
+    IEnumerator EnemyAction(float time)
+    {
+        yield return new WaitForSeconds(time);
+        TurnEnd();
+    }
 }
