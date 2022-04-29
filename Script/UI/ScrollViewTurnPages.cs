@@ -15,7 +15,7 @@ public class ScrollViewTurnPages : MonoBehaviour
     private int allBtnCount;
     private int btnCount = 10;
     public GameObject showP;
-    int pages = 1;
+    public int pages = 1;
     int allPages;
     private bool isRoll = false;
 
@@ -30,7 +30,7 @@ public class ScrollViewTurnPages : MonoBehaviour
 
         delta_x = contentWidth * allPages + content.GetComponent<GridLayoutGroup>().spacing.x;
         content.sizeDelta = new Vector2(delta_x, content.sizeDelta.y);
-
+        
         btnLast.onClick.AddListener(() =>
                {
                    isRoll = true;
@@ -52,26 +52,27 @@ public class ScrollViewTurnPages : MonoBehaviour
             {
                 pages++;
                 showP.GetComponent<TextMeshProUGUI>().text = pages + "/" + allPages;
-                // Debug.Log(pages);
             }
         });
     }
 
     void Update()
     {
-        delta_x = contentWidth * allPages + content.GetComponent<GridLayoutGroup>().spacing.x;
-
-        // Debug.Log(UIManager.Instance.isSwitch);
         if (UIManager.Instance.isSwitch)
         {
+            delta_x = contentWidth * allPages + content.GetComponent<GridLayoutGroup>().spacing.x;
             if (UIManager.Instance.eachCount / 10.0 == 1.0)
                 allPages = Mathf.CeilToInt(UIManager.Instance.eachCount / 10);
             else
                 allPages = Mathf.CeilToInt(UIManager.Instance.eachCount / 10) + 1;
-            // pages = 1;
-            // Debug.Log(pages + " " + allPages);
+
             content.sizeDelta = new Vector2(delta_x, content.sizeDelta.y);
             showP.GetComponent<TextMeshProUGUI>().text = pages + "/" + allPages;
         }
+    }
+
+    public void ResetPagePos(Vector2 pos)
+    {
+        transform.position = pos;
     }
 }

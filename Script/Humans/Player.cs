@@ -9,19 +9,7 @@ public class Player : Singleton<Player>
     public bool IsDead = false;
     public int drawCardCount = 3;
 
-
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-
+    
 
 
 }

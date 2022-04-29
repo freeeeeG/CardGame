@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.IO;
 public class CardData : Singleton<CardData>
 {
     public List<Card> CardList = new List<Card>(); // 存储卡牌数据的链表
@@ -79,9 +77,10 @@ public class CardData : Singleton<CardData>
                 int mo = int.Parse(rowArray[3]);
                 int num = int.Parse(rowArray[4]);
                 string attibute = rowArray[5];
-                string effect = rowArray[6];
+               
                 
-                string back_name = rowArray[7];
+                string back_name = rowArray[6];
+                 string effect = rowArray[7];
 
                 CardList.Add(new CombineCard(id, name, mo,num, attibute, back_name, effect));
             }
