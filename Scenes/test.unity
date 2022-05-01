@@ -4024,7 +4024,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1062349477
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4301,7 +4301,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sprite: {fileID: 0}
   animator: {fileID: 0}
-  actionTime: 0
+  actionTime: 2
 --- !u!1 &1097215329
 GameObject:
   m_ObjectHideFlags: 0
@@ -4468,7 +4468,7 @@ MonoBehaviour:
   m_Follow: {fileID: 1026841164}
   m_Lens:
     FieldOfView: 60
-    OrthographicSize: 5.015237
+    OrthographicSize: 5.017967
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -4886,7 +4886,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1197442404
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6904,7 +6904,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5.015237
+  orthographic size: 5.017967
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -8994,7 +8994,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1963430504
 RectTransform:
   m_ObjectHideFlags: 0

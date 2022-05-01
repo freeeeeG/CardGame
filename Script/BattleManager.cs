@@ -119,7 +119,8 @@ public class BattleManager : Singleton<BattleManager>
     }
     public void OnClickTurnEnd()
     {
-        TurnEnd();
+        if(currentPhase == GamePhase.playerAction)
+            TurnEnd();
     }
     void TurnEnd()
     {
@@ -141,9 +142,11 @@ public class BattleManager : Singleton<BattleManager>
     public void OnEnemyAction()
     {
         if (currentPhase == GamePhase.enemyAction)
+        {
             //TODO: 敌方行动
             StartCoroutine(EnemyAction(Enemy.Instance.EnemyAction()));
 
+        }
 
 
     }

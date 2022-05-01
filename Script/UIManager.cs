@@ -3,36 +3,43 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-
+using System.Linq;
 public class UIManager : Singleton<UIManager>
 {
     // Start is called before the first frame update
     #region CardManager
-    public List<Card> cardList = new List<Card>();
-    public List<Card> sideList = new List<Card>();
-    public List<Card> combineList = new List<Card>();
-    public List<Card> elementList = new List<Card>();
-    #endregion
-
-    #region BagUI
     [Header("Bag UI")]
+
     public List<GameObject> elements;
     public List<GameObject> sideCard;
     public List<Card> combineCards = null;
-    public int sideCardCount = 0;
-    public int elementCardCount = 0;
+    public List<GameObject> combineCard = null;
     public GameObject cardPrefab;
     public GameObject sideCardGroup;
     public GameObject elementCardGroup;
 
-    public List<CardDisplay> cardDisplays = new List<CardDisplay>();
+    public ScrollViewTurnPages scrollViewTurnPages;
 
-    string tempo_r;
-    string tempo_l;
+    #endregion
+
+    #region BagUI
+    public bool combineFlag = false;
+    public SpellCard combineSpellCard;
+    public SideCard combineSideCard;
+    public List<Card> cardList = new List<Card>();
+    public List<SideCard> sideList = new List<SideCard>();
+    public List<CombineCard> combineList = new List<CombineCard>();
+    public List<SpellCard> elementList = new List<SpellCard>();
+    public int sideCardCount = 0;
+    public int elementCardCount = 0;
+    public List<CardDisplay> cardDisplays = new List<CardDisplay>();
+    List<CombineCard> combineTempoList = new List<CombineCard>();
+
+    #region 无用
     public int eachCount = 0;
     public bool isSwitch = false;
+    #endregion
     public bool changePage = false;
-    public ScrollViewTurnPages scrollViewTurnPages;
     public Vector2 firstPagePos = new Vector2(1420, 1080);
 
     #endregion
@@ -81,258 +88,223 @@ public class UIManager : Singleton<UIManager>
     }
     public void ElementUIClickEvent(GameObject ele)
     {
-        // reset the page number to 1 when click the element card
         scrollViewTurnPages.pages = 1;
         scrollViewTurnPages.ResetPagePos(firstPagePos);
-
-        Card eleCard = null;
-
-        // find the element card in the cardList
+        SpellCard eleCard = null;
         foreach (var item in elementList)
         {
             if (item.cardName == ele.GetComponentInChildren<TextMeshProUGUI>().text)
             {
                 eleCard = item;
-                break;
-            }
-            else
-            {
-                throw new Exception("没有找到元素牌");
             }
         }
-
-        List<Card> tempList = new List<Card>();
-        // find all the side card that has the same element
+        combineSpellCard = eleCard;
+        List<SideCard> tempList = new List<SideCard>();
         tempList = Find(eleCard);
-        sideCardCount = tempList.Count;
-        for (int i = 0; i < sideCardCount; i++)
-        {
-            CombineCard card = tempList[i] as CombineCard;
-            sideCard[i].GetComponentInChildren<TextMeshProUGUI>().text = card.back_name;
-        }
-
-        // reset the color of the whole element card
         if (ele.GetComponent<Image>().color == Color.white)
+        {
             for (int i = 0; i < elementCardCount; i++)
                 elements[i].GetComponent<Image>().color = Color.white;
-        // set the color of the element card
-        else if ((ele.GetComponent<Image>().color == Color.red))
-        {
-            //TODO: scene1(flag = 0): show combine card when click the element card
-            //TODO: scene2(flag = 0): cancel the selection of element card then show all side card 
-            CombineEvent(tempList, 0);
+            combineFlag = false;
+            combineSideCard = null;
         }
+        else if (ele.GetComponent<Image>().color == Color.red)
+        {
+            combineFlag = true;
+        }
+        SideCardDisplay(tempList);
+        if (combineSideCard != null)
+        {
+            CombineCardDispaly(CombineEvent(combineFlag));
+        }
+
     }
     public void SideCardUIClickEvent(GameObject ele)
     {
-        List<Card> tempList = new List<Card>();
-        Card tempCard = null;
+        List<SpellCard> tempList = new List<SpellCard>();
+        SideCard tempCard = null;
         string selectElement = ele.GetComponentInChildren<TextMeshProUGUI>().text;
 
-        // find the side card in the cardList
         foreach (var item in sideList)
         {
             if (item.cardName == selectElement)
             {
                 tempCard = item;
-                break;
-            }
-            else
-            {
-                throw new Exception("没有找到旁牌");
             }
         }
-        // find all the element card with the same side name
+
+        combineSideCard = tempCard;
         tempList = Find(tempCard);
-        foreach (var item in tempList)
-        {
-            CombineCard card = item as CombineCard;
-            foreach (var element in elements)
-            {
-                if (selectElement == card.attribute)
-                {
-                    // highlight the element card
-                    element.GetComponent<Image>().color = Color.red;
-                }
-            }
-        }
-        // TODO: scene1(flag = 1): show combine card when click the side card
-        // TODO: scene2(flag = 1): mark down the side card for the scene1 of "ElementUIClickEvent"
-        // TODO: scene3(flag = 1): if the element card is not selected, show all side card
-        CombineEvent(tempList, 1);
-
-        // Array.Clear(txtLeft, 0, txtLeft.Length);
-        // combineCard.SetActive(true);
-        // int index = -1;
-        // string right = ele.GetComponentInChildren<TextMeshProUGUI>().text;
-        // if (right != tempo_r)
-        // {
-        //     tempo_r = right;
-        //     // for (int k = 0; k < elements.Length; k++)
-        //     // {
-        //     //     elements[k].GetComponent<Image>().color = Color.white;
-        //     // }
-        // }
-
-        // int i = 0, j = 0;
-
-        // //记录点击旁卡对应的元素&组合卡
-        // foreach (var item in cardList)
-        // {
-        //     if (item is CombineCard)
-        //     {
-        //         var comCard = item as CombineCard;
-        //         if (comCard.back_name == right) //识别旁卡的名称
-        //         {
-        //             txtLeft[i] = comCard.attribute; //记录元素
-        //             combine[i] = txtRight[i].combine;   //记录卡名
-        //             i++;
-        //         }
-        //     }
-        // }
-        //点击设置元素卡的颜色
-        // foreach (var item in txtLeft)
-        // {
-        //     index = Array.IndexOf(eleList, item);
-        //     if (index != -1)
-        //     {
-        //         elements[index].GetComponent<Image>().color = Color.red;
-        //     }
-        // }
-        // foreach (var item in cardList)
-        // {
-        //     if (item is CombineCard)
-        //     {
-        //         var comCard = item as CombineCard;
-        //         if (comCard.back_name == right)
-        //         {
-        //             txtLeft[i] = comCard.attribute;
-        //             combine[i] = comCard.cardName;
-
-        //             i++;
-        //         }
-        //     }
-        // }
-        // //设置合成卡的名称
-        // foreach (var item in txtRight)
-        // {
-        //     if (right == item.side)
-        //     {
-        //         combineCard.transform.GetChild(0).GetComponentInChildren<TextMeshProUGUI>().text = item.combine;
-        //     }
-        // }
-
+        CombineCardDispaly(CombineEvent(combineFlag));
     }
 
     public void CombineCardUIClickEvent(GameObject ele)
     {
 
     }
-    public void CombineEvent(List<Card> list, int flag)
+    public CombineCard CombineEvent(bool flag)
     {
-        List<Card> tempList = new List<Card>();
-        Card tempCard = null;
 
-        // show combine card 0, 1
-        // show all side card 0, 1
-        // cancel the selection of element card 0
-        // mark down the selected side card 1
-        // mark down the selected element card 0
-
-        if (flag == 0) {
-            
-        } else {
-
+        foreach (var item in combineList)
+        {
+            if (item.attribute == combineSpellCard.cardName && item.back_name == combineSideCard.cardName && flag)
+            {
+                return item;
+            }
         }
-
-        // for (int x = 0; x < elements.Length; x++)
-        // {
-        //     foreach (var items in cardList)
-        //     {
-        //         if (items is CombineCard)
-        //         {
-        //             var eleCard = items as CombineCard;
-        //             if (left == eleCard.attribute && tempo_r == eleCard.back_name)
-        //             {
-        //                 combineCard.transform.GetChild(0).GetComponentInChildren<TextMeshProUGUI>().text = eleCard.cardName;
-        //             }
-        //         }
-        //     }
-        // }
+        return null;
     }
 
-    public List<Card> GetAllSideCard()
+    public void CombineCardDispaly(CombineCard card)
     {
-        List<Card> list = new List<Card>();
+
+    }
+
+    public List<SideCard> GetAllSideCard()
+    {
+        List<SideCard> list = new List<SideCard>();
         foreach (var item in cardList)
         {
             if (item is SideCard)
             {
-                list.Add(item);
+                var sideCard = item as SideCard;
+                list.Add(sideCard);
             }
         }
         return list;
     }
-    public List<Card> GetAllCombineCard()
+    public List<CombineCard> GetAllCombineCard()
     {
-        List<Card> list = new List<Card>();
+        List<CombineCard> list = new List<CombineCard>();
         foreach (var item in cardList)
         {
             if (item is CombineCard)
             {
-                list.Add(item);
+                var combineCard = item as CombineCard;
+                list.Add(combineCard);
             }
         }
         return list;
     }
-    public List<Card> GetAllElementCard()
+    public List<SpellCard> GetAllElementCard()
     {
-        List<Card> list = new List<Card>();
+        List<SpellCard> list = new List<SpellCard>();
         foreach (var item in cardList)
         {
             if (item is SpellCard)
             {
-                list.Add(item);
-                Debug.Log(item.cardName);
+                var spellCard = item as SpellCard;
+                list.Add(spellCard);
             }
         }
         return list;
     }
-    public List<Card> Find(Card card)
+    public List<SpellCard> Find(SideCard card)
     {
         //TODO: 查找合成卡片
-        List<Card> list = new List<Card>();
-
-        if (card is SpellCard)
+        List<SpellCard> list = new List<SpellCard>();
+        List<CombineCard> comList = new List<CombineCard>();
+        foreach (var item in combineList)
         {
-            foreach (var item in combineList)
+            var comCard = item as CombineCard;
+            if (comCard.attribute == card.cardName) //find element by sideCard
             {
-                var comCard = item as CombineCard;
-                if (comCard.attribute == card.cardName) //find element by sideCard
+                foreach (var elecard in elementList)
                 {
-                    list.Add(comCard);
-                }
-            }
-            return list;
-        }
-        if (card is SideCard)
-        {
-            foreach (var item in cardList)
-            {
-                if (item is CombineCard)
-                {
-                    var comCard = item as CombineCard;
-                    if (comCard.back_name == card.cardName) //find sideCard by element
+                    if (elecard.cardName == comCard.back_name)
                     {
-                        list.Add(comCard);
+                        list.Add(elecard);
+                        comList.Add(comCard);
                     }
                 }
             }
-            return list;
+        }
+        combineTempoList = comList;
+        return list;
+    }
+    public List<SideCard> Find(SpellCard card)
+    {
+        List<SideCard> list = new List<SideCard>();
+        List<CombineCard> comList = new List<CombineCard>();
+        foreach (var item in combineList)
+        {
+            if (item.attribute == card.cardName)
+            {
+                foreach (var side in sideList)
+                {
+                    if (side.cardName == item.back_name)
+                    {
+                        list.Add(side);
+                        comList.Add(item);
+                        Debug.Log("sideCard.cardName: " + side.cardName);
+                        Debug.Log("comCard.back_name: " + item.cardName);
+                    }
+                }
+            }
         }
 
+        combineTempoList = comList;
+        return list;
+    }
 
-        return null;
+    public void SideCardDisplay(List<SideCard> list)
+    {
+        for (int i = 0; i < sideCardCount; i++)
+            sideCard[i].SetActive(false);
+        foreach (var item in list)
+            for (int i = 0; i < sideCardCount; i++)
+                if (sideCard[i].GetComponentInChildren<TextMeshProUGUI>().text == item.cardName)
+                    sideCard[i].SetActive(true);
+    }
+
+    public void ElementCardDisplay()
+    {
+        for (int i = 0; i < elements.Count; i++)
+        {
+            foreach (var item in combineTempoList)
+            {
+                if (elements[i].GetComponentInChildren<TextMeshProUGUI>().text == item.attribute)
+                {
+                    elements[i].GetComponent<Image>().color = Color.red;
+                    Debug.Log("red");
+                }
+                else
+                {
+                    elements[i].GetComponent<Image>().color = Color.white;
+                    Debug.Log("white");
+                }
+            }
+        }
+    }
+    public void CancelSelected(List<Card> cardList)
+    {
+        if (cardList.Intersect(elementList).Count() >= 1)
+        {
+            foreach (var item in sideCard)
+            {
+                item.SetActive(true);
+                Debug.Log("sideCard" + item.name);
+            }
+        }
+        else if (cardList.Intersect(sideList).Count() >= 1)
+        {
+            foreach (var item in elements)
+            {
+                item.GetComponent<Image>().color = Color.white;
+            }
+        }
+    }
+
+    public List<CombineCard> ChangeCardListType(List<Card> list)
+    {
+        List<CombineCard> tempList = new List<CombineCard>();
+        foreach (var item in list)
+        {
+            var comcard = item as CombineCard;
+            tempList.Add(comcard);
+        }
+
+        return tempList;
     }
 
     #endregion

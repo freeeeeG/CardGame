@@ -11,7 +11,7 @@ public class Enemy : Singleton<Enemy>
     public float EnemyAction()
     {
         AiTree();
-        Debug.Log(animator.GetCurrentAnimatorStateInfo(0).length);
+        // Debug.Log(animator.GetCurrentAnimatorStateInfo(0).length);
         return actionTime;
     }
     public virtual void AiTree(){

@@ -70,7 +70,6 @@ public class BattleCard : MonoBehaviour, IPointerDownHandler, IPointerExitHandle
     public void OnPointerEnter(PointerEventData eventData)
     {
         transform.SetAsLastSibling();
-        if(BattleManager.Instance.currentPhase == GamePhase.playerAction)
         transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
 
 
@@ -78,7 +77,6 @@ public class BattleCard : MonoBehaviour, IPointerDownHandler, IPointerExitHandle
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if(BattleManager.Instance.currentPhase == GamePhase.playerAction)
         transform.localScale = new Vector3(1f, 1f, 1f);
         BattleManager.Instance.CardByCard();
     }
