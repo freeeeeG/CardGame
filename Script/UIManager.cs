@@ -7,7 +7,7 @@ using System.Linq;
 public class UIManager : Singleton<UIManager>
 {
     // Start is called before the first frame update
-    #region CardManager
+    #region UIGameObjectManager
     [Header("Bag UI")]
 
     public List<GameObject> elements;
@@ -32,17 +32,25 @@ public class UIManager : Singleton<UIManager>
     public List<SpellCard> elementList = new List<SpellCard>();
     public int sideCardCount = 0;
     public int elementCardCount = 0;
+
     public List<CardDisplay> cardDisplays = new List<CardDisplay>();
+
     List<CombineCard> combineTempoList = new List<CombineCard>();
-    IEnumerable<Card> sideTempoList = new List<SideCard>();
-    IEnumerable<Card> elementTempoList = new List<SpellCard>();
+    List<Card> sideTempoList = new List<SideCard>().Cast<Card>().ToList();
+    List<Card> elementTempoList = new List<SpellCard>().Cast<Card>().ToList();
+
 
     #region 无用
     public int eachCount = 0;
     public bool isSwitch = false;
+    public List<Card> test = new List<Card>();
+    public List<SpellCard> test2 = new List<SpellCard>();
     #endregion
+    public Card lastClickCard;
     public bool changePage = false;
     public Vector2 firstPagePos = new Vector2(1420, 1080);
+    public Action OnCardClick;
+    public Func<int,int> OnCardCount;
 
     #endregion
     void Start()
@@ -55,18 +63,18 @@ public class UIManager : Singleton<UIManager>
     // Update is called once per frame
     void Update()
     {
-
+        
     }
     #region BagUI
+
     public void BagUIStart()
     {
         eachCount = 0;
         isSwitch = true;
         cardList = CardData.Instance.CardList;
-        sideList = GetAllSideCard();
-        combineList = GetAllCombineCard();
-        elementList = GetAllElementCard();
-
+        sideList = GetAllCard<SideCard>();
+        combineList = GetAllCard<CombineCard>();
+        elementList = GetAllCard<SpellCard>();
         //创建旁牌&赋值
         foreach (var item in sideList)
         {
@@ -92,7 +100,6 @@ public class UIManager : Singleton<UIManager>
     {
         scrollViewTurnPages.pages = 1;
         scrollViewTurnPages.ResetPagePos(firstPagePos);
-
         SpellCard eleCard = null;
         foreach (var item in elementList)
         {
@@ -105,26 +112,36 @@ public class UIManager : Singleton<UIManager>
         List<SideCard> tempList = new List<SideCard>();
         tempList = Find(eleCard);
 
-        if (ele.GetComponent<Image>().color == Color.white)
+        if (lastClickCard != null && lastClickCard.cardName == eleCard.cardName)
         {
-            for (int i = 0; i < elementCardCount; i++)
-                elements[i].GetComponent<Image>().color = Color.white;
             combineFlag = false;
             combineSideCard = null;
+            for (int i = 0; i < elementCardCount; i++)
+                elements[i].GetComponent<Image>().color = Color.white;
+            SideCardDisplay(GetAllCard<SideCard>());
+            lastClickCard = null;
         }
-        else if (ele.GetComponent<Image>().color == Color.red)
+        else
         {
-            combineFlag = true;
+            if (ele.GetComponent<Image>().color == Color.white)
+            {
+                for (int i = 0; i < elementCardCount; i++)
+                    elements[i].GetComponent<Image>().color = Color.white;
+                ele.GetComponent<Image>().color = Color.green;
+                combineFlag = false;
+                combineSideCard = null;
+            }
+            else if (ele.GetComponent<Image>().color == Color.red)
+            {
+                combineFlag = true;
+            }
+            SideCardDisplay(tempList);
+            if (combineSideCard != null)
+            {
+                CombineCardDispaly(CombineEvent(combineFlag));
+            }
+            lastClickCard = eleCard;
         }
-
-        // Judge(tempList);
-
-        // SideCardDisplay(tempList);
-        // if (combineSideCard != null)
-        // {
-        //     CombineCardDispaly(CombineEvent(combineFlag));
-        // }
-
     }
     public void SideCardUIClickEvent(GameObject ele)
     {
@@ -138,6 +155,7 @@ public class UIManager : Singleton<UIManager>
         tempList = Find(tempCard);
         ElementCardDisplay(tempList);
         CombineCardDispaly(CombineEvent(combineFlag));
+        lastClickCard = tempCard;
         // Judge(tempList);
     }
     public void CombineCardUIClickEvent(GameObject ele)
@@ -161,42 +179,27 @@ public class UIManager : Singleton<UIManager>
     {
 
     }
-
-    public List<SideCard> GetAllSideCard()
+    public List<T> GetAllCard<T>() where T : Card
     {
-        List<SideCard> list = new List<SideCard>();
+        List<T> list = new List<T>();
         foreach (var item in cardList)
         {
-            if (item is SideCard)
+            if (item is T)
             {
-                var sideCard = item as SideCard;
-                list.Add(sideCard);
+                list.Add(item as T);
             }
         }
         return list;
     }
-    public List<CombineCard> GetAllCombineCard()
+    public List<T> Find<T, U>(U card) where T : Card where U : Card
     {
-        List<CombineCard> list = new List<CombineCard>();
-        foreach (var item in cardList)
+        List<T> list = new List<T>();
+        List<CombineCard> comList = new List<CombineCard>();
+        foreach (var item in combineList)
         {
-            if (item is CombineCard)
+            if (item is T && item.cardName == card.cardName)
             {
-                var combineCard = item as CombineCard;
-                list.Add(combineCard);
-            }
-        }
-        return list;
-    }
-    public List<SpellCard> GetAllElementCard()
-    {
-        List<SpellCard> list = new List<SpellCard>();
-        foreach (var item in cardList)
-        {
-            if (item is SpellCard)
-            {
-                var spellCard = item as SpellCard;
-                list.Add(spellCard);
+                list.Add(item as T);
             }
         }
         return list;
@@ -210,11 +213,11 @@ public class UIManager : Singleton<UIManager>
         {
             if (item.back_name == card.cardName) //find element by sideCard
             {
-                foreach (var ele in elementList)
+                foreach (var card1 in elementList)
                 {
-                    if (ele.cardName == item.attribute)
+                    if (card1.cardName == item.attribute)
                     {
-                        list.Add(ele);
+                        list.Add(card1);
                         comList.Add(item);
                     }
                 }
@@ -231,49 +234,23 @@ public class UIManager : Singleton<UIManager>
         {
             if (item.attribute == card.cardName)
             {
-                foreach (var side in sideList)
+                foreach (var card1 in sideList)
                 {
-                    if (side.cardName == item.back_name)
+                    if (card1.cardName == item.back_name)
                     {
-                        list.Add(side);
+                        list.Add(card1);
                         comList.Add(item);
-                        // Debug.Log("sideCard.cardName: " + side.cardName);
-                        // Debug.Log("comCard.back_name: " + item.cardName);
                     }
                 }
             }
         }
-
         combineTempoList = comList;
         return list;
     }
-
-    public void Judge(List<Card> tempoList)
-    {
-        Debug.Log("Judge:   /   " + sideTempoList + "   /   " + tempoList);
-        if (sideTempoList != null || elementTempoList != null)
-        {
-            if (tempoList == sideTempoList || tempoList == elementTempoList)
-            {
-                CancelSelected(tempoList);
-            }
-        }
-        else
-        {
-            if (tempoList is SideCard)
-            {
-                sideTempoList = tempoList;
-                SideCardDisplay(tempoList);
-            }
-        }
-    }
-    public void SideCardDisplay<T>(List<T> list) { }
-
     public void SideCardDisplay(List<SideCard> list)
     {
         for (int i = 0; i < sideCardCount; i++)
             sideCard[i].SetActive(false);
-
         foreach (var item in list)
             for (int i = 0; i < sideCardCount; i++)
                 if (sideCard[i].GetComponentInChildren<TextMeshProUGUI>().text == item.cardName)
@@ -284,37 +261,12 @@ public class UIManager : Singleton<UIManager>
         for (int i = 0; i < elementCardCount; i++)
             elements[i].GetComponent<Image>().color = Color.white;
         foreach (var item in list)
-        {
             for (int i = 0; i < elementCardCount; i++)
                 if (elements[i].GetComponentInChildren<TextMeshProUGUI>().text == item.cardName)
-                {
                     elements[i].GetComponent<Image>().color = Color.red;
-                }
-        }
+
     }
 
-    public List<T> CancelSelected<T>(List<T> cardList)
-    {
-        Debug.Log("CancelSelected: " + cardList);
-        if (cardList is SpellCard)
-        {
-            Debug.Log("CancelSelected" + cardList);
-            foreach (var item in sideCard)
-            {
-                item.SetActive(true);
-            }
-        }
-        else if (cardList is SideCard)
-        {
-            Debug.Log("CancelSelected" + cardList);
-            foreach (var item in elements)
-            {
-                item.GetComponent<Image>().color = Color.white;
-            }
-        }
-
-        return null;
-    }
 
     #endregion
     #region BattleUI

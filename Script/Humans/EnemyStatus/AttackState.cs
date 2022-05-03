@@ -9,16 +9,11 @@ public class AttackState : EnemyBaseState
     public override void EnterState(Enemy enemy)
     {
         //TODO: enemy attack animation
-        // enemy.animator.SetBool("Attack", true);
+        enemy.animator.SetTrigger("attack");
         // enemy.actionTime = enemy.animator.GetCurrentAnimatorStateInfo(0).length;
-        // StartCoroutine(AttackOver(enemy));    
+        // StartCoroutine(AttackOver(enemy));
+        // Player.Instance.data.hp -= 1;
+        CamareManager.Instance.FollowPlayer(1f);
     }
-    IEnumerator AttackOver(Enemy enemy)
-    {
-        yield return new WaitForSeconds(0.5f);
-        enemy.animator.SetBool("Attack", false);
-
-    }
-    
     
 }

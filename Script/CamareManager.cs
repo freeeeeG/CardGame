@@ -2,9 +2,11 @@
 using UnityEngine;
 using DG.Tweening;
 using Cinemachine;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 public class CamareManager : Singleton<CamareManager>
 {
-
 
     public GameObject camarePoint;
     public Vector3 mousePos;
@@ -59,5 +61,20 @@ public class CamareManager : Singleton<CamareManager>
         if (CM.m_Lens.OrthographicSize <= 5)
             CM.m_Lens.OrthographicSize += speed_cf * Time.deltaTime;
 
+    }
+
+    public void FollowPlayer(float time)
+    {
+        followPlayerFlag = true;
+        StartCoroutine(FollowPlayer_down(time));
+        speed_cf = _speed_cf;
+        dv = dv*3;
+    }
+    IEnumerator FollowPlayer_down(float time)
+    {
+        yield return new WaitForSeconds(time);
+        speed_cf = _speed_cf;
+        dv = dv/3;
+        followPlayerFlag = false;
     }
 }

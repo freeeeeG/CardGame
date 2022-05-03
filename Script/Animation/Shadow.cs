@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Shadow : Singleton<Shadow>
+public class Shadow : MonoBehaviour
 {
     public Vector3[] shadowPos;
     public Sprite[] shadowSprites;

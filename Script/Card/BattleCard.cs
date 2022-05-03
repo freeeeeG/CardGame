@@ -91,9 +91,7 @@ public class BattleCard : MonoBehaviour, IPointerDownHandler, IPointerExitHandle
         Player.Instance.GetComponent<Animator>().SetInteger("Skill", 1);
 
         BattleManager.Instance.HandCardSort(id,gameObject);
-        CamareManager.Instance.speed_cf = CamareManager.Instance._speed_cf; 
-        CamareManager.Instance.dv = CamareManager.Instance.dv*=3; 
-        CamareManager.Instance.followPlayerFlag = true;
+        CamareManager.Instance.FollowPlayer(1f);
 
         SceneManagers.Instance.followMouseFlag = false;
         // 离开屏幕外面
@@ -105,11 +103,7 @@ public class BattleCard : MonoBehaviour, IPointerDownHandler, IPointerExitHandle
     {
         yield return new WaitForSeconds(time);
         Debug.Log("WaitForSeconds");
-        CamareManager.Instance.followPlayerFlag = false;
-        CamareManager.Instance.speed_cf = CamareManager.Instance._speed_cf; 
-        CamareManager.Instance.dv = CamareManager.Instance.dv/=3; 
         SceneManagers.Instance.followMouseFlag = true;
-        CamareManager.Instance.Shake();
         Player.Instance.GetComponent<Animator>().SetInteger("Skill", 0);
 
         if (BattleManager.Instance.currentPhase == GamePhase.playerAction)
