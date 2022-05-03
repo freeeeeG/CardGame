@@ -1,5 +1,3 @@
-
-
 public class Card
 {
     
@@ -98,8 +96,4 @@ public class ItemCard : Card
         }
     }
 }
-
-
-
-
 

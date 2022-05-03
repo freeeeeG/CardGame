@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.IO;
 public class CardData : Singleton<CardData>
 {
     public List<Card> CardList = new List<Card>(); // 存储卡牌数据的链表
@@ -86,9 +84,10 @@ public class CardData : Singleton<CardData>
                 int mo = int.Parse(rowArray[3]);
                 int num = int.Parse(rowArray[4]);
                 string attibute = rowArray[5];
-                string effect = rowArray[6];
+               
                 
-                string back_name = rowArray[7];
+                string back_name = rowArray[6];
+                 string effect = rowArray[7];
 
                 CardList.Add(new CombineCard(id, name, mo,num, attibute, back_name, effect));
                 CombineCardsList.Add(new CombineCard(id, name, mo, num, attibute, back_name, effect));
@@ -150,31 +149,3 @@ public class CardData : Singleton<CardData>
     {
         return CardList;
     }
-    public List<SpellCard> GetSpellCards()   //返回属性牌
-    {
-        return SpellCardsList;
-    }
-    public List<CombineCard> GetCombineCards()   //返回组合牌
-    {
-        return CombineCardsList;
-    }
-    public SpellCard GetScardFormCcard(CombineCard _Ccard)   //从根据combine获取Spell卡
-    {
-        SpellCard _SpellCard=new SpellCard(0,"无卡牌",0,0,"Null");
-        try
-        {
-            foreach (var SpellCard in SpellCardsList)
-            {
-                if (SpellCard.cardName == _Ccard.attribute)
-                {
-                    _SpellCard = SpellCard;
-                }
-            }
-        }
-        catch
-        {
-            Debug.Log("未找到卡牌");
-        }
-        return _SpellCard;
-    }
-}

@@ -13,11 +13,11 @@ public class BattleManager : Singleton<BattleManager>
 
 
     public GameObject playerData; // 数据
-    public int playerHandsCounts; // 手牌数
-    public GameObject[] playerHands; // 手牌
+
     public GameObject enemyHands;
     public Transform canvas;
-    
+
+
     private GameObject waitingMonster;
     public GameObject cardPrefab;
 
@@ -25,13 +25,7 @@ public class BattleManager : Singleton<BattleManager>
     public GameObject attackPrefab;//攻击指示箭头
     private GameObject arrow;
     public List<Card> playerDeckList = new List<Card>(); // 卡组
-    public List<Card> enemyDeckList = new List<Card>();
-    // 生命值
-    public int playerHealthPoint;
-    public int enemyHealthPoint;
-
-    public GameObject playerIcon;
-    public GameObject enemyIcon;
+    public int playerDeckCardCount; // 卡组卡牌数
     //回合阶段
     public GamePhase currentPhase = GamePhase.gameStart;
 
@@ -39,7 +33,13 @@ public class BattleManager : Singleton<BattleManager>
     private int waitingID;
     public GameObject attackingMonster;
     private int attackingID;
-    
+    //手牌整理
+    [Header("手牌整理")]
+    public int playerHandsCounts; // 手牌数
+    public GameObject[] playerHands; // 手牌
+    public float playerHandsDistance = 1152; // 手牌间距
+    public float playerHandsHigh = -281; // 手牌起始高度
+
 
     public bool isPlayerTurn = true;
     // Start is called before the first frame update
@@ -51,10 +51,10 @@ public class BattleManager : Singleton<BattleManager>
     {
         // 敌方先手
         Debug.Log("Game Start");
-        if(isPlayerTurn)
-        currentPhase = GamePhase.playerDraw;
+        if (isPlayerTurn)
+            currentPhase = GamePhase.playerDraw;
         else
-        currentPhase = GamePhase.enemyAction;
+            currentPhase = GamePhase.enemyAction;
         ReadDeck();
         OnPlayerDrawCard();
     }
@@ -75,31 +75,32 @@ public class BattleManager : Singleton<BattleManager>
                 }
             }
         }
-    
+
     }
 
 
     //抽牌
     public void DrawCard(int _player, int _number)
     {
-        if (_player == 0)
-        {
-
-            if(playerHandsCounts < 5)
-            for (int i = 0; i < _number &&  playerHandsCounts < 5; i++)
+        if (playerHandsCounts < 5)
+            for (int i = 0; i < _number && playerHandsCounts < 5; i++)
             {
                 playerHands[playerHandsCounts].SetActive(true);
                 playerHandsCounts++;
                 // TODO: 显示抽到的牌
-                // newCard.GetComponent<CardDisplay>().card = playerDeckList[0];
-                // playerDeckList.RemoveAt(0);
+                // playerDeckCardCount++;
+                // if (playerDeckCardCount == playerDeckList.Count)
+                // SortCard()，palyerDeckCardCount = 0;
+                // playerHands[playerHandsCounts].GetComponent<CardDisplay>().card = playerDeckList[playerDeckCardCount];
+                // 
+
             }
-            else
-            {
-                playerHands[playerHandsCounts].SetActive(true);
-                playerHandsCounts++;
-            }
+        else
+        {
+            playerHands[playerHandsCounts].SetActive(true);
+            playerHandsCounts++;
         }
+
     }
 
     #region 每回合生命周期
@@ -111,12 +112,15 @@ public class BattleManager : Singleton<BattleManager>
         {
             Debug.Log("抽牌");
             DrawCard(0, Player.Instance.drawCardCount);
+            HandCardFan();
+            CardByCard();
             currentPhase = GamePhase.playerAction;
         }
     }
     public void OnClickTurnEnd()
     {
-        TurnEnd();
+        if(currentPhase == GamePhase.playerAction)
+            TurnEnd();
     }
     void TurnEnd()
     {
@@ -132,7 +136,7 @@ public class BattleManager : Singleton<BattleManager>
         }
 
         //TODO: 更新回合(八卦牌)
-        
+
     }
 
     public void OnEnemyAction()
@@ -140,85 +144,56 @@ public class BattleManager : Singleton<BattleManager>
         if (currentPhase == GamePhase.enemyAction)
         {
             //TODO: 敌方行动
-            TurnEnd();
+            StartCoroutine(EnemyAction(Enemy.Instance.EnemyAction()));
+
         }
 
+
     }
-
-
     #endregion
-    public void AttackRequest(Vector2 _startPoint, int _player, GameObject _monster)
+
+    //整理手牌
+    public void HandCardSort(int id, GameObject card)
     {
-        if (arrow == null)
+        for (int i = id; i < playerHandsCounts; i++)
         {
-            arrow = GameObject.Instantiate(attackPrefab, canvas);
+            playerHands[i].GetComponent<CardDisplay>().card = playerHands[i + 1].GetComponent<CardDisplay>().card;
+
         }
-
-        arrow.GetComponent<ArrowFollow>().SetStartPoint(_startPoint);
-
-        // 直接攻击条件
-        bool strightAttack = true;
-        if (_player == 1)
+        if (id == playerHandsCounts)
         {
-            foreach (var block in playerHands)
-            {
-                if (block.GetComponent<CardBlock>().Card != null)
-                {
-                    block.GetComponent<CardBlock>().SetAttack();
-                    strightAttack = false;
-                }
-            }
-            if (strightAttack)
-            {
-                // 可以直接攻击对手玩家
-            }
+            card.transform.position += new Vector3(10000, 0, 0);
         }
-
-        attackingMonster = _monster;
-        attackingID = _player;
-
+        else
+        {
+            playerHands[playerHandsCounts].SetActive(false);
+        }
+        HandCardFan();
+        CardByCard();
     }
 
-
-    public void UseRequest(Vector2 _startPoint, int _player, GameObject _monster)
+    public void HandCardFan()
     {
-        if (arrow == null)
+        Debug.Log("手牌整理");
+        float st = 0 - playerHandsDistance / 2;
+        float dx = playerHandsDistance / (playerHandsCounts + 1);
+        float dTheta = 60 / (playerHandsCounts + 1);
+        for (int i = 0; i < playerHandsCounts; i++)
         {
-            arrow = GameObject.Instantiate(attackPrefab, canvas);
+            playerHands[i].GetComponent<RectTransform>().anchoredPosition3D = new Vector3(st + dx * (i + 1), playerHandsHigh, 0);
+
+            playerHands[i].GetComponent<BattleCard>().oringinalPosition = playerHands[i].transform.position;
         }
-
-        arrow.GetComponent<ArrowFollow>().SetStartPoint(_startPoint);
-
-        //TODO: 技能使用
-        bool strightAttack = true;
-        if (_player == 1)
-        {
-            foreach (var block in playerHands)
-            {
-                if (block.GetComponent<CardBlock>().Card != null)
-                {
-                    block.GetComponent<CardBlock>().SetAttack();
-                    strightAttack = false;
-                }
-            }
-            if (strightAttack)
-            {
-                // 可以直接攻击对手玩家
-            }
-        }
-
-        attackingMonster = _monster;
-        attackingID = _player;
-
-    }
-    public void HandCardSort(int id)
-    {
-        for(int i = id; i < playerHandsCounts; i++)
-        {
-            playerHands[i].SetActive(true);
-
-        }
-        playerHands[playerHandsCounts].SetActive(false);
     }
 
+    public void CardByCard()
+    {
+        for (int i = 0; i < playerHandsCounts; i++)
+            playerHands[i].transform.SetAsFirstSibling();
+    }
+    IEnumerator EnemyAction(float time)
+    {
+        yield return new WaitForSeconds(time);
+        TurnEnd();
+    }
 }

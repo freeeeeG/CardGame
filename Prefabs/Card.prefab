@@ -91,13 +91,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardName: {fileID: 0}
-  cardAttack: {fileID: 0}
-  cardHealth: {fileID: 0}
+  mo: {fileID: 0}
   infoText: {fileID: 0}
   background: {fileID: 0}
-  monsterColor: {r: 0, g: 0, b: 0, a: 0}
-  itemColor: {r: 0, g: 0, b: 0, a: 0}
+  besideColor: {r: 0, g: 0, b: 0, a: 0}
+  feildColor: {r: 0, g: 0, b: 0, a: 0}
   spellColor: {r: 0, g: 0, b: 0, a: 0}
+  divinationColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!114 &7646402055440997983
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -111,5 +111,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BattleManager: {fileID: 0}
+  id: 0
   cardState: 0
   hasAttacked: 0
+  oringinalPosition: {x: 0, y: 0, z: 0}
+  mousePos: {x: 0, y: 0, z: 0}
+  rectTransform: {fileID: 0}
+  isCardFolled: 0

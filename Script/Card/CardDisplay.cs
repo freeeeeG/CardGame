@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class CardDisplay : MonoBehaviour
 {
+    public GameObject Card;
     public Card card;
     public Text cardName;
     public Text mo;   //墨值

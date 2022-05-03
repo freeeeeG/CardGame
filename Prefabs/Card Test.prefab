@@ -90,10 +90,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardName: {fileID: 0}
-  cardAttack: {fileID: 0}
-  cardHealth: {fileID: 0}
+  mo: {fileID: 0}
   infoText: {fileID: 0}
   background: {fileID: 0}
-  monsterColor: {r: 0, g: 0, b: 0, a: 0}
-  itemColor: {r: 0, g: 0, b: 0, a: 0}
+  besideColor: {r: 0, g: 0, b: 0, a: 0}
+  feildColor: {r: 0, g: 0, b: 0, a: 0}
   spellColor: {r: 0, g: 0, b: 0, a: 0}
+  divinationColor: {r: 0, g: 0, b: 0, a: 0}
