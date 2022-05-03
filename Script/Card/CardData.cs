@@ -6,6 +6,10 @@ public class CardData : Singleton<CardData>
 {
     public List<Card> CardList = new List<Card>(); // 存储卡牌数据的链表
 
+    public List<SpellCard> SpellCardsList = new List<SpellCard>();
+    public List<CombineCard> CombineCardsList = new List<CombineCard>();
+    public List<SideCard> SideCardsList = new List<SideCard>();
+    public List<DivinationCard> DivinationCardsList = new List<DivinationCard>();
     
     public TextAsset cardListData; // 卡牌数据txt文件
     // Start is called before the first frame update
@@ -50,6 +54,7 @@ public class CardData : Singleton<CardData>
                 
                 string effect = rowArray[5];
                 CardList.Add(new SpellCard(id, name,  mo, num,effect ));
+                SpellCardsList.Add(new SpellCard(id, name, mo, num, effect));  //添加进小卡表
             }
 
             else if(rowArray[0]=="side")
@@ -60,6 +65,7 @@ public class CardData : Singleton<CardData>
                 int num = int.Parse(rowArray[4]);
                 string effect = rowArray[5];
                 CardList.Add(new SideCard(id, name, mo, num,effect));
+                SideCardsList.Add(new SideCard(id, name, mo, num, effect));
             }
             else if(rowArray[0]== "divination")
             {
@@ -71,6 +77,7 @@ public class CardData : Singleton<CardData>
                 string effect = rowArray[6];
                 
                 CardList.Add(new DivinationCard(id, name, mo,num, effect,attibute ));
+                DivinationCardsList.Add(new DivinationCard(id, name, mo, num, effect, attibute));
             }
             else if(rowArray[0]=="combine")
             {
@@ -84,6 +91,7 @@ public class CardData : Singleton<CardData>
                 string back_name = rowArray[7];
 
                 CardList.Add(new CombineCard(id, name, mo,num, attibute, back_name, effect));
+                CombineCardsList.Add(new CombineCard(id, name, mo, num, attibute, back_name, effect));
             }
         }
     
@@ -138,8 +146,35 @@ public class CardData : Singleton<CardData>
 
         return copyCard;
     }
-    public List <Card>  GetCard()
+    public List <Card>  GetCard()   //返回全卡表
     {
         return CardList;
+    }
+    public List<SpellCard> GetSpellCards()   //返回属性牌
+    {
+        return SpellCardsList;
+    }
+    public List<CombineCard> GetCombineCards()   //返回组合牌
+    {
+        return CombineCardsList;
+    }
+    public SpellCard GetScardFormCcard(CombineCard _Ccard)   //从根据combine获取Spell卡
+    {
+        SpellCard _SpellCard=new SpellCard(0,"无卡牌",0,0,"Null");
+        try
+        {
+            foreach (var SpellCard in SpellCardsList)
+            {
+                if (SpellCard.cardName == _Ccard.attribute)
+                {
+                    _SpellCard = SpellCard;
+                }
+            }
+        }
+        catch
+        {
+            Debug.Log("未找到卡牌");
+        }
+        return _SpellCard;
     }
 }
