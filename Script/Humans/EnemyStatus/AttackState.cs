@@ -14,6 +14,7 @@ public class AttackState : EnemyBaseState
         // StartCoroutine(AttackOver(enemy));
         // Player.Instance.data.hp -= 1;
         CamareManager.Instance.FollowPlayer(1f);
+        
     }
     
 }

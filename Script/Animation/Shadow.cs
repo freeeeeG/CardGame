@@ -6,7 +6,19 @@ public class Shadow : MonoBehaviour
 {
     public Vector3[] shadowPos;
     public Sprite[] shadowSprites;
+    public GameObject shadowObj;
+    public SpriteRenderer sr;
     public float shadowLiveTime = 1000f;
+
+    private void Start()
+    {
+        sr = shadowObj.GetComponent<SpriteRenderer>();
+        ShadowColor();
+    }
+    public void ShadowColor()
+    {
+        sr.color = new Color(1, 1, 1, 0.5f);
+    }
     public void ShadowUP()
     {
         StartCoroutine(WaitShadowForSeconds(0.1f));
@@ -22,7 +34,7 @@ public class Shadow : MonoBehaviour
         for (int i = 0; i < shadowPos.Length; i++)
         {
 
-            GameObject shadow = Instantiate(gameObject, shadowPos[i], Quaternion.identity);
+            GameObject shadow = Instantiate(shadowObj, shadowPos[i], Quaternion.identity);
             shadow.GetComponent<SpriteRenderer>().sprite = shadowSprites[i];
             Destroy(shadow, shadowLiveTime);
 

@@ -63,7 +63,7 @@ public class UIManager : Singleton<UIManager>
     // Update is called once per frame
     void Update()
     {
-        
+
     }
     #region BagUI
 
@@ -265,6 +265,11 @@ public class UIManager : Singleton<UIManager>
                 if (elements[i].GetComponentInChildren<TextMeshProUGUI>().text == item.cardName)
                     elements[i].GetComponent<Image>().color = Color.red;
 
+    }
+
+    public void AddCard(Card card)
+    {
+        
     }
 
 

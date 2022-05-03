@@ -5,8 +5,10 @@ using UnityEngine;
 public class Enemy : Singleton<Enemy>
 {
     public EnemyBaseState currentState = new AttackState();
+    
     public Sprite sprite;
     public Animator animator;
+    public EnemyStatusData data;
     public float actionTime;
     private void Start()
     {
