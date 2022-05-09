@@ -38,8 +38,10 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-
-
+    public void GameStop()
+    {
+        
+    }
     void Restart()
     {
         //TODO: Restart

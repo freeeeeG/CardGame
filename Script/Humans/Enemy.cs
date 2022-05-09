@@ -8,7 +8,7 @@ public class Enemy : Singleton<Enemy>
     
     public Sprite sprite;
     public Animator animator;
-    public EnemyStatusData data;
+    public EnemyData data;
     public float actionTime;
     private void Start()
     {

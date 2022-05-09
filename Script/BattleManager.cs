@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-
+using DG.Tweening;
+using System;
 
 public enum GamePhase
 {
@@ -11,7 +11,7 @@ public enum GamePhase
 public class BattleManager : Singleton<BattleManager>
 {
 
-
+    public Action playerTurnEnd;
     public GameObject playerData; // 数据
 
     public GameObject enemyHands;
@@ -25,7 +25,8 @@ public class BattleManager : Singleton<BattleManager>
     public GameObject attackPrefab;//攻击指示箭头
     private GameObject arrow;
     public List<Card> playerDeckList = new List<Card>(); // 卡组
-    public int playerDeckCardCount; // 卡组卡牌数
+
+    public int drawCardCount = 0; // 抽卡数
     //回合阶段
     public GamePhase currentPhase = GamePhase.gameStart;
 
@@ -62,20 +63,8 @@ public class BattleManager : Singleton<BattleManager>
 
     // 读取卡组
     void ReadDeck()
-    {
-        PlayerCardData pdm = playerData.GetComponent<PlayerCardData>();
-        for (int i = 0; i < pdm.playerDeck.Length; i++)
-        {
-            if (pdm.playerDeck[i] != 0)
-            {
-                int counter = pdm.playerDeck[i];
-                for (int j = 0; j < counter; j++)
-                {
-                    playerDeckList.Add(cardDate.CopyCard(i));
-                }
-            }
-        }
-
+    { 
+        playerDeckList = PlayerCardData.Instance.cardDeskList;
     }
 
 
@@ -91,8 +80,12 @@ public class BattleManager : Singleton<BattleManager>
                 // playerDeckCardCount++;
                 // if (playerDeckCardCount == playerDeckList.Count)
                 // SortCard()，palyerDeckCardCount = 0;
-                // playerHands[playerHandsCounts].GetComponent<CardDisplay>().card = playerDeckList[playerDeckCardCount];
-                // 
+                // playerHands[playerHandsCounts].GetComponent<CardDisplay>().card = playerDeckList[drawCardCount++];
+                // if(drawCardCount == playerDeckList.Count)
+                // {
+                //     // TODO: 洗牌
+                //     drawCardCount = 0;
+                // }
 
             }
         else
@@ -119,13 +112,14 @@ public class BattleManager : Singleton<BattleManager>
     }
     public void OnClickTurnEnd()
     {
-        if(currentPhase == GamePhase.playerAction)
+        if (currentPhase == GamePhase.playerAction)
             TurnEnd();
     }
     void TurnEnd()
     {
         if (currentPhase == GamePhase.playerAction)
         {
+            playerTurnEnd.Invoke();
             currentPhase = GamePhase.enemyAction;
             OnEnemyAction();
         }
@@ -189,8 +183,29 @@ public class BattleManager : Singleton<BattleManager>
     public void CardByCard()
     {
         for (int i = 0; i < playerHandsCounts; i++)
+        {
             playerHands[i].transform.SetAsFirstSibling();
+            playerHands[i].GetComponent<BattleCard>().transform.position = playerHands[i].GetComponent<BattleCard>().oringinalPosition;
+        }
     }
+
+    public IEnumerator CardDown(float time)
+    {
+        for (int i = 0; i < playerHandsCounts; i++)
+        {
+            yield return new WaitForSeconds(time);
+            playerHands[i].GetComponent<RectTransform>().anchoredPosition3D = new Vector3(playerHands[i].GetComponent<RectTransform>().anchoredPosition3D.x, playerHands[i].GetComponent<RectTransform>().anchoredPosition3D.y - 1000, 0);
+        }
+        // CardByCard();
+    }
+
+    public void UseCard(string name, int id, int skillid, float time, GameObject card)
+    {
+        Instance.playerHandsCounts--;
+        HandCardSort(id, gameObject);
+        // gameObject.GetComponent<CardDisplay>().card.Skill();
+    }
+
     IEnumerator EnemyAction(float time)
     {
         yield return new WaitForSeconds(time);

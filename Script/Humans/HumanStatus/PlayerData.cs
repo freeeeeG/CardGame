@@ -5,7 +5,6 @@ using UnityEngine;
 public class PlayerData : MonoBehaviour
 {
     public PlayerStatusData datas;
-
     public int hp {
         get {
             return datas.hp;
@@ -22,20 +21,12 @@ public class PlayerData : MonoBehaviour
             datas.maxHp = value;
         }
     }
-    public int attack {
+    public int tempMaxHp {
         get {
-            return datas.attack;
+            return datas.tempMaxHp;
         }
         set {
-            datas.attack = value;
-        }
-    }
-    public int speed {
-        get {
-            return datas.speed;
-        }
-        set {
-            datas.speed = value;
+            datas.tempMaxHp = value;
         }
     }
     public int money {
@@ -87,6 +78,47 @@ public class PlayerData : MonoBehaviour
         }
     }
 
-    
+    public int mo {
+        get {
+            return datas.mo;
+        }
+        set {
+            datas.mo = value;
+        }
+    }
+    public int maxMo {
+        get {
+            return datas.maxMo;
+        }
+        set {
+            datas.maxMo = value;
+        }
+    }
+    public int tempMaxMo {
+        get {
+            return datas.tempMaxMo;
+        }
+        set {
+            datas.tempMaxMo = value;
+        }
+    }
+
+    public int shield {
+        get {
+            return datas.shield;
+        }
+        set {
+            datas.shield = value;
+        }
+    }
+
+    public int armor {
+        get {
+            return datas.armor;
+        }
+        set {
+            datas.armor = value;
+        }
+    }
 
 }

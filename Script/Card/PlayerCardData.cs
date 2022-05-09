@@ -3,91 +3,84 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
 using System.Text;
-public class PlayerCardData : MonoBehaviour
+public class PlayerCardData : Singleton<PlayerCardData>
 {
     private TextAsset playerData;
-    public Text coinsText;
-    public Text cardsText;
     public int totalCoins;
     public int[] playerCards;
     public int[] playerDeck;
 
+    public int cardCount;
+
     public string datapath = "/Datas/PlayerCard.csv";
-    public List<Card> cardlistALL;
-    public List<Card> cardlist;
+    public List<Card> cardlistALL = new List<Card>();
+    public List<Card> cardList = new List<Card>();
+    public List<Card> cardDeskList = new List<Card>();
     private void Start()
     {
 
         //测试单例调用
         cardlistALL = CardData.Instance.GetCard();
-        //cardlist = cardlistALL;
-       
+
         foreach (var card in cardlistALL)
         {
             // Debug.Log("" + card.cardName);
         }
-        //LoadPlayerData();  //再读取玩家数据
+        LoadPlayerData();  //再读取玩家数据
+        foreach (var card in cardList)
+        {
+            Debug.Log("" + card.cardName);
+        }
         //AddCard(cardlistALL[6]); //测试添加卡
     }
-    private void Update(){
-    //if(Input.GetKey(KeyCode.W)) {
-    //    SavePlayerData(cardlist);
-    //}
-    //if(Input.GetKey(KeyCode.S))
-    //    {
-    //        LoadPlayerData();
-    //        TestPlayerCard();
-    //    }
-    //if(Input.GetKey(KeyCode.A))
-    //    {
-    //        AddCard(cardlistALL[6]);
-    //    }
-}
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            SavePlayerData(cardList);
+        }
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            LoadPlayerData();
+            TestPlayerCard();
+        }
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            AddCard(cardlistALL[6]);
+        }
+    }
+
+    #region 背包
     public void SavePlayerData(List<Card> _cardlist)
     {
-        cardlist = _cardlist;
+        cardList = _cardlist;
 
 
         List<string> datas = new List<string>();
         string path = Application.dataPath + datapath;
+        Debug.Log(path);
         // Debug.Log(totalCoins);
-        datas.Add("cards," + cardlist.Count.ToString());
+        datas.Add("cards," + cardCount);
         datas.Add("#,卡id,卡名,墨,数量");
-        foreach(var card in cardlist)   //保存卡组
+        foreach (var card in cardList)   //保存卡组
         {
-            if(card!=null)
+            if (card != null)
             {
-                datas.Add("card," + card.id +","+ card.cardName + "," + card.mo.ToString() + "," + card.num.ToString());
-            }
+                datas.Add("card," + card.id + "," + card.cardName + "," + card.mo.ToString() + "," + card.num.ToString());
 
-            //if(card is SpellCard)
-            //{
-            //    datas.Add("spell," + card.id+card.cardName+card.num.ToString());
-            //}
-            //if (card is CombineCard)
-            //{
-            //    datas.Add("combine," + card.id + card.cardName + card.num.ToString());
-            //}
-            //if (card is SideCard)
-            //{
-            //    datas.Add("side," + card.id + card.cardName + card.num.ToString());
-            //}
-            //if (card is DivinationCard)
-            //{
-            //    datas.Add("divination," + card.id + card.cardName + card.num.ToString());
-            //}
+            }
         }
-        
-        File.WriteAllLines(path, datas,Encoding.UTF8);
-       
+
+        File.WriteAllLines(path, datas, Encoding.UTF8);
+
 
     }
     public void LoadPlayerData()
     {
-        cardlist.Clear();
+        cardList.Clear();
 
 
-        string[] datarow = File.ReadAllLines(Application.dataPath+datapath);
+        string[] datarow = File.ReadAllLines(Application.dataPath + datapath);
         //string[] datarow = playerData.text.Split('\n');
         foreach (var row in datarow)
         {
@@ -96,79 +89,76 @@ public class PlayerCardData : MonoBehaviour
             {
                 continue;
             }
-            else if (rowArray[0]=="card")
+            else if (rowArray[0] == "card")
             {
                 int id = int.Parse(rowArray[1]);
-                string name = rowArray[2];
-                int mo = int.Parse(rowArray[3]);
                 int num = int.Parse(rowArray[4]);
-                cardlist.Add(new Card(id, name, mo, num));
-              //  Debug.Log("" + name + id.ToString());
+                var tempCard = CardData.Instance.GetCard(id);
+                tempCard.num = num;
+                cardList.Add(tempCard);
+            }
+            else if (rowArray[0] == "cards")
+            {
+                cardCount = int.Parse(rowArray[1]);
+            }
+            else
+            {
+                Debug.Log("error");
             }
         }
     }
     public void AddCard(Card _card)
     {
-        bool flag = false;
 
-            for (int i = 0; i < cardlist.Count; i++)    //按照id循环查找卡牌
+
+        for (int i = 0; i < cardList.Count; i++)    //按照id循环查找卡牌
+        {
+            //Debug.Log("卡id" + cardlist[i].id + "i:" + i);
+            if (cardList[i].id == _card.id)
             {
-                //Debug.Log("卡id" + cardlist[i].id + "i:" + i);
-                if (cardlist[i].id == _card.id)
-                {
-                    cardlist[i].num += 1;
-                    Debug.Log("添加的卡" + cardlist[i].id.ToString() + "数量" + cardlist[i].num);
-                    flag = true;
-                    break;
-                }
-
+                cardList[i].num += 1;
+                cardCount++;
+                Debug.Log("添加的卡" + cardList[i].id.ToString() + "数量" + cardList[i].num);
+                break;
             }
-        
-        if(flag)
-        {
-            return;
+
         }
-        else
-        {
-            cardlist.Add(new Card(_card.id, _card.cardName, _card.mo, 1));
-        }
-        
+
     }
     public void DeleteCard(Card _card)
     {
-        bool flag = false;
-        for (int i = 0; i < cardlist.Count; i++)    //循环查找卡牌
+        for (int i = 0; i < cardList.Count; i++)    //循环查找卡牌
         {
-            if (cardlist[i].id == _card.id)
+            if (cardList[i].id == _card.id)
             {
-                if(cardlist[i].num>0)
+                if (cardList[i].num == 0)
                 {
-                    cardlist[i].num--;
+                    // TODO: 取消删除
+                    return;
                 }
-                else if(cardlist[i].num<=0)
+                if (cardList[i].num > 0)
                 {
-                    cardlist.RemoveAt(i);
-                    Debug.Log("删除成功");
+                    cardList[i].num--;
                 }
-                
-                
-                flag = true;
                 return;
             }
 
         }
-        if(flag)
-        Debug.Log("未找到卡牌");
-        else
-        {
-            return;
-        }
     }
     public void TestPlayerCard()  //测试读取到的卡牌
     {
-        for(int i=0;i<cardlist.Count;i++)
+        for (int i = 0; i < cardList.Count; i++)
         {
-            Debug.Log(cardlist[i].cardName + cardlist[i].id + "数量" + cardlist[i].num);
+            Debug.Log(cardList[i].cardName + cardList[i].id + "数量" + cardList[i].num);
         }
     }
+    #endregion
+
+
+    #region 卡组
+
+    #endregion
+
+
+
 }

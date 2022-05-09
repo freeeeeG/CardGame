@@ -6,29 +6,45 @@ using UnityEngine;
 
 
 [CreateAssetMenu(fileName = "PlayerStatusData", menuName = "Player Data/PlayerStatusData", order = 0)]
-public class PlayerStatusData : ScriptableObject 
+public class PlayerStatusData : ScriptableObject
 {
-    public int level;
     const int maxLevel = 10;
-    public int exp;
+    public int level;
     public int maxExp = 100;
+    public int exp;
     public int maxHp;
+    public int tempMaxHp;
     public int hp;
-    public int attack;
-    public int speed;
+
     public int money;
     public int cardNum;
     public int maxCardNum;
-    
-    public void Init(){
+    public int mo;
+    public int tempMaxMo;
+    public int maxMo;
+    public int shield;
+    public int armor; 
+
+
+    public void Init()
+    {
+        maxMo = 10;
+        maxHp = 100;
+        maxMo = 5;
+        maxCardNum = 5;
         level = 1;
         exp = 0;
-        hp = maxHp;
-        attack = 10;
-        speed = 10;
         money = 0;
         cardNum = 0;
-        maxCardNum = 5;
     }
-    
+
+    public void BattleStart()
+    {
+        hp = maxHp;
+        mo = maxMo;
+        cardNum = maxCardNum;
+        shield = 0;
+        armor = 0;
+    }
+
 }

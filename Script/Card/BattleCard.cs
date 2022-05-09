@@ -2,11 +2,9 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Threading;
 using System.Collections;
-public enum CardState //位置和所属状态
-{
-    inPlayerHand
-}
-public class BattleCard : MonoBehaviour, IPointerDownHandler, IPointerExitHandler,IPointerUpHandler,IPointerEnterHandler
+using System;
+using System.Reflection;
+public class BattleCard : MonoBehaviour, IPointerDownHandler, IPointerExitHandler, IPointerUpHandler, IPointerEnterHandler
 {
     public BattleManager BattleManager;
     public int id;
@@ -15,11 +13,9 @@ public class BattleCard : MonoBehaviour, IPointerDownHandler, IPointerExitHandle
     public Vector3 mousePos;
     public RectTransform rectTransform;
     public bool isCardFolled = false;
+    public Card card;
 
-
-
-
-
+    public Action<string, int, int, float, GameObject> useCard;//使用卡牌,参数：卡牌名称，卡ID，技能ID，时间,卡牌对象
 
     // Start is called before the first frame update
     void Start()
@@ -27,6 +23,8 @@ public class BattleCard : MonoBehaviour, IPointerDownHandler, IPointerExitHandle
         BattleManager = GameObject.Find("BattleManager").GetComponent<BattleManager>();
         oringinalPosition = transform.position;
         rectTransform = GetComponent<RectTransform>();
+        useCard += Player.Instance.UseCard;
+        useCard += BattleManager.Instance.UseCard;
     }
 
     // Update is called once per frame
@@ -34,12 +32,10 @@ public class BattleCard : MonoBehaviour, IPointerDownHandler, IPointerExitHandle
     {
         mousePos = Input.mousePosition;
 
-        if(isCardFolled)
+        if (isCardFolled)
         {
             transform.position = new Vector3(mousePos.x, mousePos.y, transform.position.z);
         }
-
-
 
     }
 
@@ -47,7 +43,7 @@ public class BattleCard : MonoBehaviour, IPointerDownHandler, IPointerExitHandle
     #region PointerEvent
     public void OnPointerDown(PointerEventData eventData)
     {
-        if(BattleManager.Instance.currentPhase == GamePhase.playerAction)
+        if (BattleManager.Instance.currentPhase == GamePhase.playerAction)
         {
             isCardFolled = true;
             transform.localScale = new Vector3(1f, 1f, 1f);
@@ -57,12 +53,14 @@ public class BattleCard : MonoBehaviour, IPointerDownHandler, IPointerExitHandle
     }
     public void OnPointerUp(PointerEventData eventData)
     {
-        if(BattleManager.Instance.currentPhase == GamePhase.playerAction)
+        if (BattleManager.Instance.currentPhase == GamePhase.playerAction)
         {
-            if(transform.position.y > 500f)
+            if (transform.position.y > 500f)
+            {
+                UseCard();
+            }
             transform.position = oringinalPosition;
             isCardFolled = false;
-            UseCard();
             BattleManager.Instance.CardByCard();
         }
     }
@@ -84,18 +82,26 @@ public class BattleCard : MonoBehaviour, IPointerDownHandler, IPointerExitHandle
     #endregion
     void UseCard()
     {
-        BattleManager.Instance.playerHandsCounts--;
         transform.position = oringinalPosition;
         Debug.Log("UseCard");
         // TODO: 动画
-        Player.Instance.GetComponent<Animator>().SetInteger("Skill", 1);
+        useCard.Invoke("Skill", id, 1, 0, gameObject);
 
-        BattleManager.Instance.HandCardSort(id,gameObject);
+        var t = Type.GetType("id_102");
+        var obj = Activator.CreateInstance(t);
+
+        MethodInfo method_1 = t.GetMethod("Skill");
+        method_1.Invoke(obj, null);
+
+        // StartCoroutine(BattleManager.Instance.CardDown(0.2f/(BattleManager.Instance.playerHandsCounts+1)));
         CamareManager.Instance.FollowPlayer(1f);
 
         SceneManagers.Instance.followMouseFlag = false;
-        // 离开屏幕外面
-        StartCoroutine(UseCardWaitForSeconds(1));
+
+
+        if (id == BattleManager.Instance.playerHandsCounts)
+            gameObject.SetActive(false);
+
 
 
     }
@@ -104,16 +110,15 @@ public class BattleCard : MonoBehaviour, IPointerDownHandler, IPointerExitHandle
         yield return new WaitForSeconds(time);
         Debug.Log("WaitForSeconds");
         SceneManagers.Instance.followMouseFlag = true;
-        Player.Instance.GetComponent<Animator>().SetInteger("Skill", 0);
 
+        Player.Instance.GetComponent<Animator>().SetInteger("Skill", 0);
         if (BattleManager.Instance.currentPhase == GamePhase.playerAction)
         {
 
-        }     
+        }
         transform.position = oringinalPosition;
         BattleManager.Instance.CardByCard();
-        if(id == BattleManager.Instance.playerHandsCounts)
-            gameObject.SetActive(false);    
+
 
 
     }

@@ -16,6 +16,7 @@ public class CamareManager : Singleton<CamareManager>
     public float _speed_cf = 10;
     public float speed_cf = 10;
     public float dv = 1;
+    public float dy = -100f;
     // Start is called before the first frame update
     void Start()
     {
@@ -48,7 +49,7 @@ public class CamareManager : Singleton<CamareManager>
 
     public void CentreFollow()
     {
-        camarePoint.transform.position = new Vector3((Enemy.Instance.transform.position.x + Player.Instance.transform.position.x) / 2, camarePoint.transform.position.y, camarePoint.transform.position.z);
+        camarePoint.transform.position = new Vector3((Enemy.Instance.transform.position.x + Player.Instance.transform.position.x) / 2, dy, camarePoint.transform.position.z);
         if (CM.m_Lens.OrthographicSize >= 3)
             CM.m_Lens.OrthographicSize -= 2*speed_cf* Time.deltaTime;
 

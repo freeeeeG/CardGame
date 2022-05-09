@@ -191,19 +191,6 @@ public class UIManager : Singleton<UIManager>
         }
         return list;
     }
-    public List<T> Find<T, U>(U card) where T : Card where U : Card
-    {
-        List<T> list = new List<T>();
-        List<CombineCard> comList = new List<CombineCard>();
-        foreach (var item in combineList)
-        {
-            if (item is T && item.cardName == card.cardName)
-            {
-                list.Add(item as T);
-            }
-        }
-        return list;
-    }
     public List<SpellCard> Find(SideCard card)
     {
         //TODO: 查找合成卡片
