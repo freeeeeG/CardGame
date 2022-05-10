@@ -13,16 +13,17 @@ public class PlayerCardData : Singleton<PlayerCardData>
     public int cardCount;
 
     public string datapath = "/Datas/PlayerCard.csv";
-    public List<Card> cardlistALL = new List<Card>();
-    public List<Card> cardList = new List<Card>();
-    public List<Card> cardDeskList = new List<Card>();
+    public string dataPathDesk = "/Datas/PlayerDeskCard.csv";
+    public List<Card> cardListALL = new List<Card>();  //全卡组列表，来自carddata
+    public List<Card> cardList = new List<Card>();    //背包卡列表
+    public List<Card> cardDeskList = new List<Card>();   //玩家卡组的id的列表
     private void Start()
     {
 
         //测试单例调用
-        cardlistALL = CardData.Instance.GetCard();
+        cardListALL = CardData.Instance.GetCard();
 
-        foreach (var card in cardlistALL)
+        foreach (var card in cardListALL)
         {
             // Debug.Log("" + card.cardName);
         }
@@ -38,15 +39,21 @@ public class PlayerCardData : Singleton<PlayerCardData>
         if (Input.GetKeyDown(KeyCode.W))
         {
             SavePlayerData(cardList);
+            SaveDeskCard(cardDeskList);
         }
         if (Input.GetKeyDown(KeyCode.S))
         {
             LoadPlayerData();
+            LoadDeskCard();
             TestPlayerCard();
         }
         if (Input.GetKeyDown(KeyCode.A))
         {
-            AddCard(cardlistALL[6]);
+            AddCard(cardListALL[6]);
+        }
+        if(Input.GetKeyDown(KeyCode.D))
+         {
+            AddCardToDesk(cardList[6]);
         }
     }
 
@@ -152,13 +159,109 @@ public class PlayerCardData : Singleton<PlayerCardData>
             Debug.Log(cardList[i].cardName + cardList[i].id + "数量" + cardList[i].num);
         }
     }
+
+    public void ResetCardList()  //重置背包卡组
+    {
+        cardList = cardListALL;
+        SavePlayerData(cardListALL);
+        Debug.Log("重置背包卡组为初始状态");
+    }
     #endregion
 
 
     #region 卡组
 
     #endregion
+    public void SaveDeskCard(List<Card> _cardLsit)  // 保存卡组  
+    {
+        cardDeskList = _cardLsit;
 
+        List<string> datas = new List<string>();
+        string path = Application.dataPath + dataPathDesk;
+        Debug.Log(path);
+   
+        datas.Add("#,卡id");
+        foreach (var card in cardDeskList)   //保存卡组
+        {
+            if (card != null)
+            {
+                datas.Add("card," + card.id );
+            }
+        }
+
+        File.WriteAllLines(path, datas, Encoding.UTF8);
+
+    }
+    public void LoadDeskCard()    //读取卡组
+    {
+        cardDeskList.Clear();
+        string[] datarow = File.ReadAllLines(Application.dataPath + dataPathDesk);
+        //string[] datarow = playerData.text.Split('\n');
+        foreach (var row in datarow)
+        {
+            string[] rowArray = row.Split(',');
+            if (rowArray[0] == "#")
+            {
+                continue;
+            }
+            else if (rowArray[0] == "card")
+            {
+                int id = int.Parse(rowArray[1]);
+                var tempCard = CardData.Instance.GetCard(id);
+                cardDeskList.Add(tempCard);
+            }
+            else
+            {
+                Debug.Log("error");
+            }
+        }
+    }
+    public void ResetDeskCard()  //重置玩家卡组
+    {
+        cardDeskList.Clear();
+        SaveDeskCard(cardDeskList);
+    }
+    public void AddCardToDesk(Card  _card)    //将背包的卡加入玩家卡组
+    {
+        for(int i=0;i<cardList.Count;i++)
+        {
+            if(cardList[i].id==_card.id)
+            {
+                if(cardList[i].num<=0)
+                {
+                    Debug.Log("添加进入卡组失败，卡牌数量为0");
+                }
+                else if(cardList[i].num>0)
+                {
+                    cardList[i].num--;
+                    var tempCard = CardData.Instance.GetCard(_card.id);
+                    cardDeskList.Add(tempCard);
+                    Debug.Log("添加卡牌进入卡组成功");
+                }
+                else
+                {
+                    Debug.Log("添加错误error");
+                }
+                
+            }
+        }
+
+    }
+    public void DeleteCardFDesk(Card _card)    //将卡从玩家卡组中删除
+    {
+        for(int i=0;i<cardDeskList.Count;i++)
+        {
+            if(cardDeskList[i].id==_card.id)
+            {
+                cardDeskList.RemoveAt(i);  //找到就删除卡牌
+                AddCard(_card);   //删除后卡牌数量增加
+            }
+            else
+            {
+                Debug.Log("未在卡组找到卡牌");
+            }
+        }
+    }
 
 
 }
