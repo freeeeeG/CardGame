@@ -7,6 +7,7 @@ using System.Reflection;
 public class BattleCard : MonoBehaviour, IPointerDownHandler, IPointerExitHandler, IPointerUpHandler, IPointerEnterHandler
 {
     public BattleManager BattleManager;
+    public SkillManager skillManager;
     public int id;
     public bool hasAttacked;
     public Vector3 oringinalPosition;
@@ -55,8 +56,9 @@ public class BattleCard : MonoBehaviour, IPointerDownHandler, IPointerExitHandle
     {
         if (BattleManager.Instance.currentPhase == GamePhase.playerAction)
         {
-            if (transform.position.y > 500f)
+            if (transform.position.y > 500f && Player.Instance.data.mo >= card.mo)
             {
+                Player.Instance.data.mo -= card.mo;
                 UseCard();
             }
             transform.position = oringinalPosition;
@@ -69,8 +71,6 @@ public class BattleCard : MonoBehaviour, IPointerDownHandler, IPointerExitHandle
     {
         transform.SetAsLastSibling();
         transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
-
-
     }
 
     public void OnPointerExit(PointerEventData eventData)
@@ -83,19 +83,17 @@ public class BattleCard : MonoBehaviour, IPointerDownHandler, IPointerExitHandle
     void UseCard()
     {
         transform.position = oringinalPosition;
-        Debug.Log("UseCard");
-        // TODO: 动画
-        useCard.Invoke("Skill", id, 1, 0, gameObject);
-
-        var t = Type.GetType("id_102");
+        var t = Type.GetType("SkillManager");
         var obj = Activator.CreateInstance(t);
 
-        MethodInfo method_1 = t.GetMethod("Skill");
+        MethodInfo method_1 = t.GetMethod("id_" + card.id);
+        Debug.Log("id_" + card.id);
         method_1.Invoke(obj, null);
 
+        useCard.Invoke("Skill", id, 1, 0, gameObject);
         // StartCoroutine(BattleManager.Instance.CardDown(0.2f/(BattleManager.Instance.playerHandsCounts+1)));
         CamareManager.Instance.FollowPlayer(1f);
-
+        BattleManager.Instance.currentPlayerUsedCards.Add(card);
         SceneManagers.Instance.followMouseFlag = false;
 
 

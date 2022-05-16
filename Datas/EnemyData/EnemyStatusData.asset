@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c37c356dc5938c4faa3d9be37640a78, type: 3}
   m_Name: EnemyStatusData
   m_EditorClassIdentifier: 
-  _maxHp: 0
-  maxHp: 0
+  maxHp: 150
   hp: 0
-  money: 0
+  money: 100
+  armor: 65
+  shield: 0

@@ -146,7 +146,7 @@ public class CardData : Singleton<CardData>
 
         return copyCard;
     }
-    public List<Card> GetCard()   //返回全卡表
+    public List<Card> GetCardList()   //返回全卡表
     {
         return CardList;
     }

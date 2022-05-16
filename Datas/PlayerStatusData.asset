@@ -13,12 +13,16 @@ MonoBehaviour:
   m_Name: PlayerStatusData
   m_EditorClassIdentifier: 
   level: 0
+  maxExp: 156
   exp: 0
-  maxExp: 100
-  maxHp: 0
-  hp: 0
-  attack: 0
-  speed: 0
+  maxHp: 146
+  tempMaxHp: 0
+  hp: 91
   money: 0
   cardNum: 0
   maxCardNum: 0
+  mo: 964
+  tempMaxMo: 0
+  maxMo: 0
+  shield: 0
+  armor: 770

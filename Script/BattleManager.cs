@@ -12,6 +12,7 @@ public class BattleManager : Singleton<BattleManager>
 {
 
     public Action playerTurnEnd;
+    public Action enemyTurnEnd;
     public GameObject playerData; // 数据
 
     public GameObject enemyHands;
@@ -34,6 +35,7 @@ public class BattleManager : Singleton<BattleManager>
     private int waitingID;
     public GameObject attackingMonster;
     private int attackingID;
+    public int turnCount;
     //手牌整理
     [Header("手牌整理")]
     public int playerHandsCounts; // 手牌数
@@ -41,15 +43,13 @@ public class BattleManager : Singleton<BattleManager>
     public float playerHandsDistance = 1152; // 手牌间距
     public float playerHandsHigh = -281; // 手牌起始高度
 
+    public List<Card> currentPlayerUsedCards = new List<Card>(); // 当前手牌
 
     public bool isPlayerTurn = true;
     // Start is called before the first frame update
-
-
-
-
     public void GameStart()
     {
+        turnCount = 1;
         // 敌方先手
         Debug.Log("Game Start");
         if (isPlayerTurn)
@@ -63,8 +63,12 @@ public class BattleManager : Singleton<BattleManager>
 
     // 读取卡组
     void ReadDeck()
-    { 
+    {
         playerDeckList = PlayerCardData.Instance.cardDeskList;
+        for (int i = 0; i < playerDeckList.Count; i++)
+        {
+            Debug.Log("读取卡组" + playerDeckList[i].cardName + playerDeckList[i].id);
+        }
     }
 
 
@@ -75,23 +79,35 @@ public class BattleManager : Singleton<BattleManager>
             for (int i = 0; i < _number && playerHandsCounts < 5; i++)
             {
                 playerHands[playerHandsCounts].SetActive(true);
-                playerHandsCounts++;
                 // TODO: 显示抽到的牌
                 // playerDeckCardCount++;
                 // if (playerDeckCardCount == playerDeckList.Count)
                 // SortCard()，palyerDeckCardCount = 0;
-                // playerHands[playerHandsCounts].GetComponent<CardDisplay>().card = playerDeckList[drawCardCount++];
-                // if(drawCardCount == playerDeckList.Count)
-                // {
-                //     // TODO: 洗牌
-                //     drawCardCount = 0;
-                // }
+                playerHands[playerHandsCounts].GetComponent<CardDisplay>().card = playerDeckList[drawCardCount];
+                playerHands[playerHandsCounts].GetComponent<CardDisplay>().ShowCard();
+                playerHands[playerHandsCounts].GetComponent<BattleCard>().card = playerDeckList[drawCardCount];
+                drawCardCount++;
+                playerHandsCounts++;
+                if (drawCardCount == playerDeckList.Count)
+                {
+                    // TODO: 洗牌
+                    drawCardCount = 0;
+                }
 
             }
         else
         {
             playerHands[playerHandsCounts].SetActive(true);
+            playerHands[playerHandsCounts].GetComponent<CardDisplay>().card = playerDeckList[drawCardCount];
+            playerHands[playerHandsCounts].GetComponent<CardDisplay>().ShowCard();
+            playerHands[playerHandsCounts].GetComponent<BattleCard>().card = playerDeckList[drawCardCount];
+            drawCardCount++;
             playerHandsCounts++;
+            if (drawCardCount == playerDeckList.Count)
+            {
+                // TODO: 洗牌
+                drawCardCount = 0;
+            }
         }
 
     }
@@ -121,12 +137,14 @@ public class BattleManager : Singleton<BattleManager>
         {
             playerTurnEnd.Invoke();
             currentPhase = GamePhase.enemyAction;
+            currentPlayerUsedCards.Clear();
             OnEnemyAction();
         }
         else if (currentPhase == GamePhase.enemyAction)
         {
             currentPhase = GamePhase.playerDraw;
             OnPlayerDrawCard();
+            turnCount++;
         }
 
         //TODO: 更新回合(八卦牌)
@@ -152,6 +170,8 @@ public class BattleManager : Singleton<BattleManager>
         for (int i = id; i < playerHandsCounts; i++)
         {
             playerHands[i].GetComponent<CardDisplay>().card = playerHands[i + 1].GetComponent<CardDisplay>().card;
+            playerHands[i].GetComponent<CardDisplay>().ShowCard();
+            playerHands[i].GetComponent<BattleCard>().card = playerHands[i + 1].GetComponent<BattleCard>().card;
 
         }
         if (id == playerHandsCounts)

@@ -21,48 +21,19 @@ public class PlayerCardData : Singleton<PlayerCardData>
     {
 
         //测试单例调用
-        cardListALL = CardData.Instance.GetCard();
+        cardListALL = CardData.Instance.GetCardList();
+        LoadDeskCard();
+        LoadPlayerData();
 
-        foreach (var card in cardListALL)
-        {
-            // Debug.Log("" + card.cardName);
-        }
-        LoadPlayerData();  //再读取玩家数据
-        foreach (var card in cardList)
-        {
-            Debug.Log("" + card.cardName);
-        }
-        //AddCard(cardlistALL[6]); //测试添加卡
     }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            SavePlayerData(cardList);
-            SaveDeskCard(cardDeskList);
-        }
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            LoadPlayerData();
-            LoadDeskCard();
-            TestPlayerCard();
-        }
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            AddCard(cardListALL[6]);
-        }
-        if(Input.GetKeyDown(KeyCode.D))
-         {
-            AddCardToDesk(cardList[6]);
-        }
     }
 
     #region 背包
     public void SavePlayerData(List<Card> _cardlist)
     {
         cardList = _cardlist;
-
-
         List<string> datas = new List<string>();
         string path = Application.dataPath + datapath;
         Debug.Log(path);
@@ -208,7 +179,9 @@ public class PlayerCardData : Singleton<PlayerCardData>
             {
                 int id = int.Parse(rowArray[1]);
                 var tempCard = CardData.Instance.GetCard(id);
+                Debug.Log("读取卡组" + tempCard.cardName + tempCard.id);
                 cardDeskList.Add(tempCard);
+
             }
             else
             {

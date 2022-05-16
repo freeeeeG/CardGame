@@ -12,9 +12,13 @@ public class AttackState : EnemyBaseState
         enemy.animator.SetTrigger("attack");
         // enemy.actionTime = enemy.animator.GetCurrentAnimatorStateInfo(0).length;
         // StartCoroutine(AttackOver(enemy));
-        // Player.Instance.data.hp -= 1;
+        Hurt(enemy.data.attack);
         CamareManager.Instance.FollowPlayer(1f);
         
     }
-    
+    public void Hurt(int damage)
+    {
+        Player.Instance.data.hp -= damage;
+
+    }
 }

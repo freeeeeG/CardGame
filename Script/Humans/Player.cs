@@ -7,7 +7,7 @@ public class Player : Singleton<Player>
 
     public const int _drawCardCount = 3;
     public PlayerData data;
-    public bool IsDead = false;
+    public bool isDead = false;
     Animator animator;
     public int drawCardCount = 3;
     private void Start()
@@ -63,7 +63,7 @@ public class Player : Singleton<Player>
         if (data.hp <= 0)
         {
             data.hp = 0;
-            IsDead = true;
+            isDead = true;
         }
     }
     public void Hurt(int damage)
@@ -87,7 +87,7 @@ public class Player : Singleton<Player>
 
     public void TurnEnd()
     {
-        data.armor = 0;
+        
     }
 
     #endregion

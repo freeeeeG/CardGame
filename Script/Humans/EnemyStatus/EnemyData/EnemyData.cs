@@ -30,5 +30,29 @@ public class EnemyData : MonoBehaviour
             datas.money = value;
         }
     }
+    public int armor {
+        get {
+            return datas.armor;
+        }
+        set {
+            datas.armor = value;
+        }
+    }
+    public int shield {
+        get {
+            return datas.shield;
+        }
+        set {
+            datas.shield = value;
+        }
+    }
+    public int attack {
+        get {
+            return datas.attack;
+        }
+        set {
+            datas.attack = value;
+        }
+    }
     
 }

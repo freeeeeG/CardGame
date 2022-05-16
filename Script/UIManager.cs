@@ -9,11 +9,10 @@ public class UIManager : Singleton<UIManager>
     // Start is called before the first frame update
     #region UIGameObjectManager
     [Header("Bag UI")]
-
     public List<GameObject> elements;
     public List<GameObject> sideCard;
-    public List<Card> combineCards = null;
-    public List<GameObject> combineCard = null;
+    public Card combineCardText;
+    public GameObject combineCard;
     public GameObject cardPrefab;
     public GameObject sideCardGroup;
     public GameObject elementCardGroup;
@@ -39,10 +38,10 @@ public class UIManager : Singleton<UIManager>
     List<Card> sideTempoList = new List<SideCard>().Cast<Card>().ToList();
     List<Card> elementTempoList = new List<SpellCard>().Cast<Card>().ToList();
 
+    public int pageCount = 0;
+    public bool isSwitch = false;
 
     #region 无用
-    public int eachCount = 0;
-    public bool isSwitch = false;
     public List<Card> test = new List<Card>();
     public List<SpellCard> test2 = new List<SpellCard>();
     #endregion
@@ -50,27 +49,69 @@ public class UIManager : Singleton<UIManager>
     public bool changePage = false;
     public Vector2 firstPagePos = new Vector2(1420, 1080);
     public Action OnCardClick;
-    public Func<int,int> OnCardCount;
+    public Func<int, int> OnCardCount;
+
+    #endregion
+
+    #region BattleUI
+    public Slider playerSlider;
+    public Slider enemySlider;
+    public TextMeshProUGUI playerText;
+    public TextMeshProUGUI enemyText;
+    public int playerValue;
+    public int enemyValue;
+    public float playerMaxValue;
+    public float playerMinValue;
+    public float enemyMaxValue;
+    public float enemyMinValue;
+    // public bool Touch = false;
 
     #endregion
     void Start()
     {
-
         BagUIStart();
-
+        BattleUIStart();
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        HpDataUpdate();
     }
     #region BagUI
 
+    public void BattleUIStart()
+    {
+        playerMaxValue = Player.Instance.data.maxHp;
+        enemyMaxValue = Enemy.Instance.data.maxHp;
+        playerMinValue = playerMaxValue / 100 * (-43);
+        enemyMinValue = enemyMaxValue / 100 * (-43);
+
+        playerSlider = GameObject.Find("PlayerHP").GetComponent<Slider>();
+        GameObject.Find("PlayerHP").GetComponent<Slider>().maxValue = playerMaxValue;
+        GameObject.Find("PlayerHP").GetComponent<Slider>().minValue = playerMinValue;
+        enemySlider = GameObject.Find("EnemyHP").GetComponent<Slider>();
+        GameObject.Find("EnemyHP").GetComponent<Slider>().maxValue = enemyMaxValue;
+        GameObject.Find("EnemyHP").GetComponent<Slider>().minValue = enemyMinValue;
+    }
+
+    public void HpDataUpdate()
+    {
+        if (Player.Instance.data.hp >= 0 && Player.Instance.data.hp <= playerMaxValue)
+        {
+            playerText.text = Player.Instance.data.hp.ToString() + "/" + playerMaxValue.ToString();
+            playerSlider.value = Player.Instance.data.hp;
+        }
+
+        if (Enemy.Instance.data.hp >= 0 && Enemy.Instance.data.hp <= enemyMaxValue)
+        {
+            enemyText.text = Enemy.Instance.data.hp.ToString() + "/" + enemyMaxValue.ToString();
+            enemySlider.value = Enemy.Instance.data.hp;
+        }
+    }
+
     public void BagUIStart()
     {
-        eachCount = 0;
-        isSwitch = true;
         cardList = CardData.Instance.CardList;
         sideList = GetAllCard<SideCard>();
         combineList = GetAllCard<CombineCard>();
@@ -95,9 +136,11 @@ public class UIManager : Singleton<UIManager>
             elements[elementCardCount].GetComponentInChildren<TextMeshProUGUI>().text = item.cardName;
             elementCardCount++;
         }
+        // 实例化合成卡
     }
     public void ElementUIClickEvent(GameObject ele)
     {
+        isSwitch = true;
         scrollViewTurnPages.pages = 1;
         scrollViewTurnPages.ResetPagePos(firstPagePos);
         SpellCard eleCard = null;
@@ -125,6 +168,13 @@ public class UIManager : Singleton<UIManager>
         {
             if (ele.GetComponent<Image>().color == Color.white)
             {
+                if (lastClickCard is SpellCard)
+                {
+                    foreach (var item in sideCard)
+                    {
+                        item.GetComponent<Image>().color = Color.white;
+                    }
+                }
                 for (int i = 0; i < elementCardCount; i++)
                     elements[i].GetComponent<Image>().color = Color.white;
                 ele.GetComponent<Image>().color = Color.green;
@@ -145,7 +195,44 @@ public class UIManager : Singleton<UIManager>
     }
     public void SideCardUIClickEvent(GameObject ele)
     {
+        isSwitch = false;
         List<SpellCard> tempList = new List<SpellCard>();
+        SideCard eleCard = null;
+        foreach (var item in sideList)
+        {
+            if (item.cardName == ele.GetComponentInChildren<TextMeshProUGUI>().text)
+            {
+                eleCard = item;
+            }
+        }
+
+        if (lastClickCard != null)
+        {
+            if (lastClickCard.cardName == ele.GetComponentInChildren<TextMeshProUGUI>().text)
+            {
+                combineFlag = false;
+            }
+            else
+            {
+                combineFlag = true;
+                lastClickCard = eleCard;
+                ele.GetComponent<Image>().color = Color.blue;
+                foreach (var item in sideCard)
+                {
+                    if (item != ele)
+                    {
+                        item.GetComponent<Image>().color = Color.white;
+                    }
+                }
+            }
+        }
+        else
+        {
+            combineFlag = false;
+            lastClickCard = eleCard;
+            ele.GetComponent<Image>().color = Color.blue;
+        }
+
         SideCard tempCard = null;
         foreach (var item in sideList)
             if (item.cardName == ele.GetComponentInChildren<TextMeshProUGUI>().text)
@@ -154,6 +241,7 @@ public class UIManager : Singleton<UIManager>
         combineSideCard = tempCard;
         tempList = Find(tempCard);
         ElementCardDisplay(tempList);
+        CombineCard c = CombineEvent(combineFlag);
         CombineCardDispaly(CombineEvent(combineFlag));
         lastClickCard = tempCard;
         // Judge(tempList);
@@ -164,20 +252,18 @@ public class UIManager : Singleton<UIManager>
     }
     public CombineCard CombineEvent(bool flag)
     {
-
-        foreach (var item in combineList)
-        {
-            if (item.attribute == combineSpellCard.cardName && item.back_name == combineSideCard.cardName && flag)
+        if (combineSpellCard != null)
+            foreach (var item in combineList)
             {
-                return item;
+                // if(combineSpellCard != null)
+                if (item.attribute == combineSpellCard.cardName && item.back_name == combineSideCard.cardName && flag)
+                {
+                    // TODO: 塞到牌库
+                    Debug.Log("com: " + item.cardName + " " + item.mo + " " + item.num + " " + item.effect);
+                    return item;
+                }
             }
-        }
         return null;
-    }
-
-    public void CombineCardDispaly(CombineCard card)
-    {
-
     }
     public List<T> GetAllCard<T>() where T : Card
     {
@@ -236,12 +322,17 @@ public class UIManager : Singleton<UIManager>
     }
     public void SideCardDisplay(List<SideCard> list)
     {
+        pageCount = 0;
         for (int i = 0; i < sideCardCount; i++)
             sideCard[i].SetActive(false);
+
         foreach (var item in list)
             for (int i = 0; i < sideCardCount; i++)
                 if (sideCard[i].GetComponentInChildren<TextMeshProUGUI>().text == item.cardName)
+                {
                     sideCard[i].SetActive(true);
+                    pageCount++;
+                }
     }
     public void ElementCardDisplay(List<SpellCard> list)
     {
@@ -253,10 +344,15 @@ public class UIManager : Singleton<UIManager>
                     elements[i].GetComponent<Image>().color = Color.red;
 
     }
-
+    public void CombineCardDispaly(CombineCard card)
+    {
+        // combineCard.GetComponent<CardDisplay>().card = card;
+        if (card != null)
+            combineCard.GetComponent<CardDisplay>().ShowCard(card);
+    }
     public void AddCard(Card card)
     {
-        
+
     }
 
 

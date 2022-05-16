@@ -1,21 +1,14 @@
 using UnityEngine;
 
-public class id_102 : CombineCard
+public class id_102 
 {
 
 
-
-    public id_102() : base(102, "铃", 0, 0, "金", "令", "暂无")
+    public void Skill()
     {
-
-    }
-
-    public override void Skill()
-    {
-
-        Enemy.Instance.data.hp -= 1;
+        Enemy.Instance.data.hp -= 2;
         Debug.Log("我打出了铃");
-        //TODO:
+
 
     }
 }

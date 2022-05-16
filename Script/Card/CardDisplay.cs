@@ -8,7 +8,7 @@ public class CardDisplay : MonoBehaviour
 {
     public GameObject Card;
     public Card card;
-    public TextMeshProUGUI  cardName;
+    public TextMeshProUGUI cardName;
     public TextMeshProUGUI mo;   //墨值
 
     public TextMeshProUGUI infoText;
@@ -27,10 +27,6 @@ public class CardDisplay : MonoBehaviour
         // ColorUtility.TryParseHtmlString("#556874", out itemColor);
         // ColorUtility.TryParseHtmlString("#79548E", out spellColor);
 
-
-
-        Card TempoCard = new Card(1, "爱", 3, 1, "亲亲抱抱贴贴，打死你！");
-        card = TempoCard;
         if (card != null)
         {
             ShowCard();
@@ -40,7 +36,7 @@ public class CardDisplay : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+ 
 
     }
     public void ShowCard()
@@ -49,6 +45,12 @@ public class CardDisplay : MonoBehaviour
         mo.text = card.mo.ToString();
         infoText.text = card.effect;
     }
-
+    
+    public void ShowCard(Card _card)
+    {
+        cardName.text = _card.cardName;
+        mo.text = _card.mo.ToString();
+        infoText.text = _card.effect;
+    }
 
 }
