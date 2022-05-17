@@ -10,6 +10,10 @@ public class Player : Singleton<Player>
     public bool isDead = false;
     Animator animator;
     public int drawCardCount = 3;
+
+    #region Buff持续时间
+    public int kan = 0;
+    #endregion
     private void Start()
     {
         animator = GetComponent<Animator>();
@@ -43,6 +47,15 @@ public class Player : Singleton<Player>
     #region 受伤
     public void RealHurt(int damage)
     {
+        if(Enemy.Instance.ifBlind)  //如果敌人失明，玩家这次不受伤
+        {
+            damage = 0;
+            Enemy.Instance.ifBlind = false;
+        }
+        if (Enemy.Instance.ifFrostbite) //如果敌人冻伤，敌人攻击玩家也会受到伤害
+        {
+            Enemy.Instance.data.hp -= 2;
+        }
         if (data.shield > 0)
         {
             if (data.shield > damage)
@@ -68,6 +81,15 @@ public class Player : Singleton<Player>
     }
     public void Hurt(int damage)
     {
+        if (Enemy.Instance.ifBlind)  //如果敌人失明，玩家这次不受伤
+        {
+            damage = 0;
+            Enemy.Instance.ifBlind = false;
+        }
+        if(Enemy.Instance.ifFrostbite) //如果敌人冻伤，敌人攻击玩家也会受到伤害
+        {
+            Enemy.Instance.data.hp -= 2;
+        }
         data.armor = data.armor - damage > 0 ? data.armor - damage : 0;
         RealHurt(data.armor - damage > 0 ? data.armor - damage : damage - data.armor);
 
@@ -79,6 +101,14 @@ public class Player : Singleton<Player>
     public void AddProp(Action<PlayerData, int> func, int valve)
     {
         func(data, valve);
+    }
+    public void Kan(int turnCount) //坎，两回合后抽牌
+    {
+        if(turnCount==kan)
+        {
+            BattleManager.Instance.DrawCard(0, 1);
+            BattleManager.Instance.DrawCard(0, 1);
+        }
     }
     #endregion
 
