@@ -15,14 +15,14 @@ MonoBehaviour:
   level: 0
   maxExp: 156
   exp: 0
-  maxHp: 146
+  maxHp: 240
   tempMaxHp: 0
-  hp: 91
+  hp: 83
   money: 0
   cardNum: 0
   maxCardNum: 0
-  mo: 964
+  mo: 1
   tempMaxMo: 0
   maxMo: 0
   shield: 0
-  armor: 770
+  armor: 832

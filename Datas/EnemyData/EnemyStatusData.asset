@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: EnemyStatusData
   m_EditorClassIdentifier: 
   maxHp: 150
-  hp: 0
+  hp: 41
   money: 100
-  armor: 65
+  armor: 62
   shield: 0
+  attack: 0
